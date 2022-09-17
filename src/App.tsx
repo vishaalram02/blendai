@@ -8,14 +8,29 @@ import { FileUpload } from "./components/FileUpload";
 import { useImageStore } from "./hooks/useImageStore";
 import { PhotoEditDisplay } from './components/PhotoEditDisplay';
 
+import { postImages } from './lib/api';
+
 export default function App() {
   const image = useImageStore(store => store.image);
 
+  const genImage = () => {
+    const reader = new FileReader();
+    if(!image){
+      return;
+    }
+    reader.readAsDataURL(image);
+    reader.onload = function () {
+      if(typeof reader.result != 'string'){
+        return;
+      }
+      postImages(reader.result, reader.result, "orange");
+    }
+  };
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       <AppShell
         padding="xl"
-        footer= {<FooterBar/>}
+        footer= {<FooterBar genImage={genImage}/>}
         navbar={<ToolSidebar />}
         styles={(theme) => ({
           main: {

@@ -35,12 +35,16 @@ const useStyles = createStyles((theme) => ({
   }),
 );
 
+type FooterBarProps = {
+  genImage: () => void;
+};
 
-export function FooterBar() {
+export function FooterBar({genImage}: FooterBarProps) {
   const [promptActive, setPromptActive] = useState(true);
   const [opened, setOpened] = useState(false);
 
   const { classes, cx } = useStyles();
+  
 
   return (
     <Footer height={60} className={classes.footer} p="md" >
@@ -73,7 +77,7 @@ export function FooterBar() {
                 </UnstyledButton>
             </Tooltip>
             
-            <Button disabled = {promptActive}>Generate</Button>
+            <Button disabled = {promptActive} onClick = {genImage}>Generate</Button>
             <TextInput className={classes.input}
                 placeholder="Your prompt"
                 radius="md"
