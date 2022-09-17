@@ -29,6 +29,10 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
+  navbar : {
+    top: 0,
+  },
+
   active: {
     '&, &:hover': {
       backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background,
@@ -68,6 +72,7 @@ const mockdata = [
 
 export function ToolSidebar() {
   const [active, setActive] = useState(2);
+  const { classes, cx } = useStyles();
 
   const links = mockdata.map((link, index) => (
     <NavbarLink
@@ -79,7 +84,7 @@ export function ToolSidebar() {
   ));
 
   return (
-    <Navbar width={{ base: 60 }} p="md">
+    <Navbar width={{ base: 60 }} className={classes.navbar} p="md">
        <Center>
         <Logo />
       </Center>
