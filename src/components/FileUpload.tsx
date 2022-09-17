@@ -8,9 +8,9 @@ export function FileUpload () {
     const updateImage = useImageStore(store => store.updateImage);
     return (
         <Container size="lg">
-            <Text variant="gradient">
-                asdlfj;aslkdf asdlk;fjasl
-            </Text>
+            <Title align="center" size={90} variant="gradient" style={{userSelect: "none", fontFamily: "Nunito Sans"}}>
+                stabilify
+            </Title>
             <Dropzone
                 onDrop={(files) => updateImage(files[0])}
                 onReject={(files) => console.log('rejected files', files)}
