@@ -33,7 +33,7 @@ export function FileUpload () {
     return (
         <Container size="lg">
             <Center>
-            <Title onMouseMove={handleMouseMove} size={90} variant="gradient" gradient={{from: 'green.2', to: 'green.1', deg: coords.x}} style={{userSelect: "none", fontFamily: "Nunito Sans", margin: 40}}>
+            <Title onMouseMove={handleMouseMove} size={90} variant="gradient" gradient={{from: 'green.2', to: 'green.1', deg: coords.x}} style={{userSelect: "none", fontFamily: "Nunito", margin: 40}}>
                 stabilify
             </Title>
             </Center>
