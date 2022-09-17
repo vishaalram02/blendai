@@ -79,13 +79,13 @@ export function FooterBar({genImage}: FooterBarProps) {
                 </UnstyledButton>
             </Tooltip>
             
-            <Button disabled = {promptActive} onClick = {genImage}>Generate</Button>
+            <Button disabled = {!promptActive} onClick = {genImage}>Generate</Button>
             <TextInput className={classes.input}
                 placeholder="Your prompt"
                 radius="md"
                 size="sm"
                 withAsterisk
-                disabled = {promptActive}
+                disabled = {!promptActive}
             />
             <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <UnstyledButton>
