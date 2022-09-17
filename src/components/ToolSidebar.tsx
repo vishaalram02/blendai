@@ -11,7 +11,7 @@ import {
   IconBucket,
   IconHandStop,
 } from '@tabler/icons';
-
+import {ReactComponent as Logo} from '../assets/logo.svg';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -80,11 +80,11 @@ export function ToolSidebar() {
 
   return (
     <Navbar height={750} width={{ base: 60 }} p="md">
-      {/* <Center>
-        <MantineLogo type="mark" size={30} />
-      </Center> */}
-      <Navbar.Section grow>
-        <Stack sx={{ height: "100%" }} justify="center" spacing={15}>
+      <Center>
+        <Logo />
+      </Center>
+      <Navbar.Section grow mt={80}>
+        <Stack justify="center" spacing={15}>
           {links}
         </Stack>
       </Navbar.Section>
