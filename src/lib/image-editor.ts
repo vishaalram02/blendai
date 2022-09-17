@@ -1,7 +1,4 @@
-import type { FileWithPath } from "@mantine/dropzone";
-
 export type ImageEditorOptions = {
-  readonly file: FileWithPath;
   readonly canvas: HTMLCanvasElement;
 }
 
@@ -10,12 +7,10 @@ export type ImageEditorOptions = {
  * Communicates asynchronously with API server.
  */
 export class ImageEditor {
-  readonly file: FileWithPath;
   readonly canvas: HTMLCanvasElement;
   readonly context: CanvasRenderingContext2D;
 
   constructor (readonly options: ImageEditorOptions) {
-    this.file = options.file;
     this.canvas = options.canvas;
     const context = this.canvas.getContext("2d");
 
@@ -30,6 +25,21 @@ export class ImageEditor {
    * Initializes canvas based on contents of file.
    */
   initialize(): void {
+    // Clear the canvas.
+    this.context.clearRect(0, 0, this._width, this._height);
+  }
 
+  /**
+   * Returns the width of the canvas.
+   */
+  private get _width(): number {
+    return this.canvas.width;
+  }
+
+  /**
+   * Returns the height of the canvas.
+   */
+  private get _height(): number {
+    return this.canvas.height;
   }
 }
