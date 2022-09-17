@@ -8,8 +8,10 @@ import {
   IconRectangle,
   IconLasso,
   IconColorPicker,
-  IconBucket
+  IconBucket,
+  IconHandStop,
 } from '@tabler/icons';
+
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -54,13 +56,14 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 const mockdata = [
+  { icon: IconHandStop, label: 'Pan Tool' },
   { icon: IconBrush, label: 'Brush' },
+  { icon: IconBucket, label: 'Paint Bucket' },
   { icon: IconWand, label: 'Magic Wand' },
   { icon: IconRectangle, label: 'Rectangle Select' },
   { icon: IconLasso, label: 'Lasso Tool' },
   { icon: IconColorPicker, label: 'Color Picker' },
   { icon: IconZoomIn, label: 'Zoom In' },
-  { icon: IconBucket, label: 'Paint Bucket' }
 ];
 
 export function ToolSidebar() {
@@ -81,7 +84,7 @@ export function ToolSidebar() {
         <MantineLogo type="mark" size={30} />
       </Center> */}
       <Navbar.Section grow>
-        <Stack justify="center" spacing={15}>
+        <Stack sx={{ height: "100%" }} justify="center" spacing={15}>
           {links}
         </Stack>
       </Navbar.Section>
