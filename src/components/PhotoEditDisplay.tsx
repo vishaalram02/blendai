@@ -20,12 +20,12 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   const canvasHeight = Math.floor(height * 0.9);
 
   useEffect(() => {
-    if (!!canvasRef.current) {
+    if (canvasRef.current !== null) {
       const img = new Image;
 
       img.onload = async function () {
         URL.revokeObjectURL(img.src);
-        editor.current = new ImageEditor({ canvas: canvasRef.current, image: await createImageBitmap(this) });
+        editor.current = new ImageEditor({ canvas: canvasRef.current!, image: await createImageBitmap(this as HTMLImageElement) });
       };
 
       img.src = url;

@@ -1,17 +1,7 @@
-import { useState } from 'react';
 import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack } from '@mantine/core';
-import {
-  TablerIcon,
-  IconBrush,
-  IconZoomIn,
-  IconWand,
-  IconRectangle,
-  IconLasso,
-  IconColorPicker,
-  IconBucket,
-  IconHandStop,
-} from '@tabler/icons';
-import {ReactComponent as Logo} from '../assets/logo.svg';
+import { ReactComponent as Logo } from '../assets/logo.svg';
+import { tools, useToolSelect } from "../hooks/useToolSelect";
+import { TablerIcon } from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -55,21 +45,10 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   );
 }
 
-const mockdata = [
-  { icon: IconHandStop, label: 'Pan Tool' },
-  { icon: IconBrush, label: 'Brush' },
-  { icon: IconBucket, label: 'Paint Bucket' },
-  { icon: IconWand, label: 'Magic Wand' },
-  { icon: IconRectangle, label: 'Rectangle Select' },
-  { icon: IconLasso, label: 'Lasso Tool' },
-  { icon: IconColorPicker, label: 'Color Picker' },
-  { icon: IconZoomIn, label: 'Zoom In' },
-];
-
 export function ToolSidebar() {
-  const [active, setActive] = useState(2);
+  const [active, setActive] = useToolSelect((state) => [state.selectedTool, state.changeTool]);
 
-  const links = mockdata.map((link, index) => (
+  const links = tools.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
@@ -80,7 +59,7 @@ export function ToolSidebar() {
 
   return (
     <Navbar width={{ base: 60 }} p="md">
-       <Center>
+      <Center>
         <Logo />
       </Center>
       <Navbar.Section grow mt={80}>
