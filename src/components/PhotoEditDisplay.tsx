@@ -30,7 +30,7 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
 
       img.src = url;
     }
-  }, [canvasRef]);
+  }, [canvasRef, width, height]);
 
   // useEffect(() => {
   //   if (!!imageRef.current) {
