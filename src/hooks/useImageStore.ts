@@ -1,13 +1,11 @@
-import { FileWithPath } from "@mantine/dropzone";
-import zustand, { StoreApi } from "zustand";
 import create from "zustand";
 
 interface ImageState {
-    readonly image: FileWithPath | null;
-    updateImage: (i: FileWithPath) => void;
+    readonly image: File | null;
+    updateImage: (i: File) => void;
 }
 
-export const useImageStore = create<ImageState>((set, get) => ({
+export const useImageStore = create<ImageState>((set) => ({
     image: null,
-    updateImage: (i: FileWithPath) => set(() => ({ image: i })),
+    updateImage: (i: File) => set(() => ({ image: i })),
 }));
