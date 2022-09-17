@@ -58,7 +58,9 @@ export function FooterBar({genImage}: FooterBarProps) {
 
             <Collapse in={opened} transitionDuration={200} transitionTimingFunction="linear">
                 <Group>
-                    <span className={classes.sliderTitle}> Seed: </span>
+                    <Tooltip label = {"Random state initializer"}>
+                      <span className={classes.sliderTitle}> Seed: </span>
+                    </Tooltip>
                     <Slider
                         size="lg"
                         className={classes.slider}
@@ -85,7 +87,7 @@ export function FooterBar({genImage}: FooterBarProps) {
                 withAsterisk
                 disabled = {promptActive}
             />
-            <Tooltip label={"Collapse"} position="top" transitionDuration={0}>
+            <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <UnstyledButton>
                     <IconReload stroke={1.5} />
                 </UnstyledButton>
