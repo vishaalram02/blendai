@@ -1,4 +1,4 @@
-function postImages(imageb64: string, maskb64: string, prompt: string):Promise<string>{
+async function postImages(imageb64: string, maskb64: string, prompt: string):Promise<string>{
     const url = "http://localhost:9000/processImage"
     return fetch(url, {
         method: "POST",
