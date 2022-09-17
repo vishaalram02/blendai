@@ -1,15 +1,17 @@
-import { MantineProvider, Text, Button, Stack } from "@mantine/core";
+import { MantineProvider, AppShell, Navbar } from "@mantine/core";
 import { theme } from "./theme";
 
 export default function App() {
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
-      <Stack align="center" mt={50}>
-        <Text size="xl" weight={500}>
-          Welcome to Mantine!
-        </Text>
-        <Button>Click the button</Button>
-      </Stack>
+      <AppShell
+        padding="md"
+        styles={(theme) => ({
+          main: { backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0] },
+        })}
+      >
+        {/* Put application here */}
+      </AppShell>
     </MantineProvider>
   );
 }
