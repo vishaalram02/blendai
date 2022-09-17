@@ -24,13 +24,16 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
       const img = new Image;
 
       img.onload = async function () {
-        URL.revokeObjectURL(img.src);
         editor.current = new ImageEditor({ canvas: canvasRef.current!, image: await createImageBitmap(this as HTMLImageElement) });
       };
 
       img.src = url;
     }
+<<<<<<< HEAD
   }, [canvasRef, width, height]);
+=======
+  }, [canvasRef, height, width]);
+>>>>>>> 96e4b936933a394d1e55d3a2466ee43906e63c18
 
   // useEffect(() => {
   //   if (!!imageRef.current) {
