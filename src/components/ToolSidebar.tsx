@@ -19,7 +19,7 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
-  navbar : {
+  navbar: {
     top: 0,
   },
 
@@ -50,7 +50,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 export function ToolSidebar() {
-  const [active, setActive] = useState(2);
+  const [active, setActive] = useToolSelect((state) => [state.selectedTool, state.changeTool]);
   const { classes, cx } = useStyles();
 
   const links = tools.map((link, index) => (
@@ -64,7 +64,7 @@ export function ToolSidebar() {
 
   return (
     <Navbar width={{ base: 60 }} className={classes.navbar} p="md">
-       <Center>
+      <Center>
         <Logo />
       </Center>
       <Navbar.Section grow mt={80}>
