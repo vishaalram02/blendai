@@ -28,6 +28,9 @@ const useStyles = createStyles((theme) => ({
     },
     hide: {
         display: "none"
+    },
+    input: {
+      width: "40vw"
     }
   }),
 );
@@ -71,7 +74,7 @@ export function FooterBar() {
             </Tooltip>
             
             <Button disabled = {promptActive}>Generate</Button>
-            <TextInput
+            <TextInput className={classes.input}
                 placeholder="Your prompt"
                 radius="md"
                 size="sm"
