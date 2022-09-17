@@ -35,12 +35,16 @@ const useStyles = createStyles((theme) => ({
   }),
 );
 
+type FooterBarProps = {
+  genImage: () => void;
+};
 
-export function FooterBar() {
+export function FooterBar({genImage}: FooterBarProps) {
   const [promptActive, setPromptActive] = useState(true);
   const [opened, setOpened] = useState(false);
 
   const { classes, cx } = useStyles();
+  
 
   return (
     <Footer height={60} className={classes.footer} p="md" >
@@ -54,7 +58,9 @@ export function FooterBar() {
 
             <Collapse in={opened} transitionDuration={200} transitionTimingFunction="linear">
                 <Group>
-                    <span className={classes.sliderTitle}> Seed: </span>
+                    <Tooltip label = {"Random state initializer"}>
+                      <span className={classes.sliderTitle}> Seed: </span>
+                    </Tooltip>
                     <Slider
                         size="lg"
                         className={classes.slider}
@@ -73,7 +79,7 @@ export function FooterBar() {
                 </UnstyledButton>
             </Tooltip>
             
-            <Button disabled = {promptActive}>Generate</Button>
+            <Button disabled = {promptActive} onClick = {genImage}>Generate</Button>
             <TextInput className={classes.input}
                 placeholder="Your prompt"
                 radius="md"
@@ -81,7 +87,7 @@ export function FooterBar() {
                 withAsterisk
                 disabled = {promptActive}
             />
-            <Tooltip label={"Collapse"} position="top" transitionDuration={0}>
+            <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <UnstyledButton>
                     <IconReload stroke={1.5} />
                 </UnstyledButton>
