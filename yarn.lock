@@ -525,14 +525,14 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mantine/core@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@mantine/core/-/core-5.1.0.tgz#9f41c6862ea5c03001c62b34bdc745999a1c07c7"
-  integrity sha512-qTIYbQxuxmkDbPYrYJ9c8J06XaS3tNc3iq+bcWXpnA1FQDM3rXnfydENA53afDjDly6U3ytXLE4nupM1jttBxw==
+"@mantine/core@5.3.3":
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/@mantine/core/-/core-5.3.3.tgz#dbdd3c18eabe4dd90962992365eb22c90a4671af"
+  integrity sha512-q44jPxOfd0YFaWgZua3DtEByNbpums1tfNPdaK6aYh/dXS80e9acZtY9F7LD/aKs0+YK6RNlVgP0bMxDaLF0xg==
   dependencies:
     "@floating-ui/react-dom-interactions" "0.6.6"
-    "@mantine/styles" "5.1.0"
-    "@mantine/utils" "5.1.0"
+    "@mantine/styles" "5.3.3"
+    "@mantine/utils" "5.3.3"
     "@radix-ui/react-scroll-area" "1.0.0"
     react-textarea-autosize "8.3.4"
 
@@ -544,23 +544,18 @@
     "@mantine/utils" "5.3.3"
     react-dropzone "14.2.2"
 
-"@mantine/hooks@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-5.1.0.tgz#4877c6baf770d7873c8ca179fe85748344aaf48d"
-  integrity sha512-CqG2qYQmjBpWa1vikl3yJKEYW061aa0VEgeRREnKrvQQjWHSl8ZoO6GmU5RSst85kKgN6Y4/JMAU9KdfAl2TrQ==
+"@mantine/hooks@5.3.3":
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-5.3.3.tgz#3baec5f620316e2395bd88624dd323a2f5dab0f8"
+  integrity sha512-90GD3pX7CanPHC35qxuVr7jNJBS9/bLJiofPUuqdKyW547D8RLRRNofoelQ7y2wKiaLhHC2oV1wUPOAk/6Oz8Q==
 
-"@mantine/styles@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@mantine/styles/-/styles-5.1.0.tgz#7930f1fc90acc4395e3e910a4b44db1dfdcde7ff"
-  integrity sha512-/Bn2d1V181hbPR0dbNjCnL9paIWw/TUQ+an7Hu1PCOsKbtEwN2Ar5I6M3e4ZuKC7AbKdlqYx53pN0n19ENFsqQ==
+"@mantine/styles@5.3.3":
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/@mantine/styles/-/styles-5.3.3.tgz#163f15eb2ccb6f29abdf9ebf17bc76fd816ebaae"
+  integrity sha512-+ZBxJYNa0tMvLh4qp15vYdF/VEBCWu8Z3zRjNpss7Cnqu7L58noi/BNbxSWrN26O0lKrF9aIj/oE+Q43pIXUKw==
   dependencies:
     clsx "1.1.1"
     csstype "3.0.9"
-
-"@mantine/utils@5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-5.1.0.tgz#82944a1390e1a13c50d111ba4024ab883c3f3fba"
-  integrity sha512-rQamOcZxKiBK9M/2/qJ5pvlKVMJ6Te6RiqKMV8NbkS3HSiFt2QrJbR7bTvA4IQQMgWslLdL9TgjPeTkUbYAVKw==
 
 "@mantine/utils@5.3.3":
   version "5.3.3"

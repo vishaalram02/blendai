@@ -79,8 +79,8 @@ export function ToolSidebar() {
   ));
 
   return (
-    <Navbar height={750} width={{ base: 60 }} p="md">
-      <Center>
+    <Navbar width={{ base: 60 }} p="md">
+       <Center>
         <Logo />
       </Center>
       <Navbar.Section grow mt={80}>
