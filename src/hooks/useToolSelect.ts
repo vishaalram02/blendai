@@ -1,24 +1,22 @@
-import { IconHandStop, IconBrush, IconBucket, IconWand, IconRectangle, IconLasso, IconColorPicker, IconZoomIn, IconEraser, IconZoomOut } from "@tabler/icons";
+import * as icons from "@tabler/icons";
 import create from "zustand";
 
 export const tools = [
-  { icon: IconHandStop, label: 'Pan Tool' },
-  { icon: IconBrush, label: 'Brush' },
-  { icon: IconEraser, label: 'Eraser' },
-  { icon: IconWand, label: 'Magic Wand' },
-  { icon: IconRectangle, label: 'Rectangle Select' },
-  { icon: IconLasso, label: 'Lasso Tool' },
-  { icon: IconZoomIn, label: 'Zoom In' },
-  { icon: IconZoomOut, label: 'Zoom Out' },
+  { icon: icons.IconHandStop, label: 'Pan Tool' },
+  { icon: icons.IconBrush, label: 'Brush' },
+  { icon: icons.IconEraser, label: 'Eraser' },
+  { icon: icons.IconRectangle, label: 'Rectangle Select' },
+  { icon: icons.IconZoomIn, label: 'Zoom In' },
+  { icon: icons.IconZoomOut, label: 'Zoom Out' },
+  { icon: icons.IconRotate2, label: 'Undo' },
+  { icon: icons.IconRotateClockwise2, label: 'Redo' },
 ];
 
 export enum ToolType {
   Hand,
   Brush,
   Eraser,
-  Wand,
   Rectangle,
-  Lasso,
   ZoomIn,
   ZoomOut
 }
