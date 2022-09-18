@@ -82,6 +82,11 @@ export class ImageEditor {
   }
 
   updateImage(image: ImageBitmap): void {
+    const { width, height } = this.getSize(LayerNames.Base);
+
+    this.layers[LayerNames.Base].context.clearRect(0, 0, width, height);
+    this.layers[LayerNames.Mask].context.clearRect(0, 0, width, height);
+
     this.layers[LayerNames.Base].element.width = image.width;
     this.layers[LayerNames.Base].element.height = image.height;
     this.layers[LayerNames.Base].context.drawImage(image, 0, 0);
