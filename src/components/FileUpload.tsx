@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTrail, animated as a} from 'react-spring';
 import { Group, Text, Container, Title, Center, Stack } from '@mantine/core';
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons';
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from '@mantine/dropzone';
@@ -30,6 +31,17 @@ export function FileUpload() {
 
     const updateImage = useImageStore(store => store.updateImage);
 
+    const letters = 'Blend anything you can imagine into reality'.split('');
+    const config = { mass: 5, tension: 2000, friction: 200 };
+
+    const trail = useTrail(letters.length, {
+        config,
+        opacity: true ? 1 : 0,
+        x: true ? 0 : 20,
+        height: true ? 80 : 0,
+        from: { opacity: 0, x: 20, height: 0 }
+      });
+
     return (
         <Container size="lg">
             <Center>
@@ -37,7 +49,21 @@ export function FileUpload() {
                     <Title onMouseMove={handleMouseMove} size={80} variant="gradient" gradient={{ from: 'green.2', to: 'green.1', deg: coords.x }} style={{ userSelect: "none", fontFamily: "Nunito", marginTop: 10, textAlign: "center" }}>
                         Blend.ai
                     </Title>
-                    <Text style={{marginBottom: 40,fontFamily: "Verdana", fontStyle: "italic"}} size={20}>Blend anything you can imagine into reality</Text>
+                    <Text style={{marginBottom: 40,fontFamily: "Verdana", fontStyle: "italic"}} size={20}>
+                        <span>
+                            {trail.map(({ x, height, ...rest }, index) => (
+                            <a.span
+                                key={letters[index]}
+                                className="trails-text"
+                                style={{
+                                ...rest,
+                                transform: x.interpolate(x => `translate3d(0,${x}px,0)`)
+                            }}>
+                            <a.span style={{ height }}>{letters[index]}</a.span>
+                            </a.span>
+                        ))}
+                         </span>
+                    </Text>
                 
                 </Stack>
                 
