@@ -41,11 +41,10 @@ type FooterBarProps = {
 };
 
 export function FooterBar({genImage}: FooterBarProps) {
-  const [promptActive, setPromptActive] = useState(false);
   const [opened, setOpened] = useState(false);
 
   const { classes, cx } = useStyles();
-  const [seed, updateSeed] = useImageStore(store => [store.seed, store.updateSeed])
+  const [seed, updateSeed, image] = useImageStore(store => [store.seed, store.updateSeed, store.image])
 
   return (
     <Footer height={60} className={classes.footer} p="md" >
@@ -80,15 +79,14 @@ export function FooterBar({genImage}: FooterBarProps) {
             </Popover>
 
             
-            
             <TextInput className={classes.input}
                 placeholder="Your prompt"
                 radius="md"
                 size="sm"
                 withAsterisk
-                disabled = {promptActive}
+                disabled = {!image}
             />
-            <Button disabled = {promptActive} color="green.1" onClick = {genImage}>Generate</Button>
+            <Button disabled = {!image} color="green.1" onClick = {genImage}>Generate</Button>
             <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <UnstyledButton>
                     <IconReload stroke={1.5} />
