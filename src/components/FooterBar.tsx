@@ -91,7 +91,7 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
                 onChange={(event) => setPrompt(event.currentTarget.value)}
                 disabled = {!image || loading}
             />
-            <Button disabled = {!image || loading} color="green.1" onClick = {genImage(prompt)}>Generate</Button>
+            <Button disabled = {!image || loading} color="green.1" onClick = {genImage(prompt, seed)}>Generate</Button>
             <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <ActionIcon>
                     <IconReload stroke={1.5} />

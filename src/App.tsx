@@ -28,8 +28,10 @@ export default function App() {
     return res.blob();
   }
 
-  const genImage = (prompt: string) => async () => {
+  const genImage = (prompt: string, seed: number) => async () => {
     console.log("PROMT", prompt)
+    console.log("SEED", seed)
+
     if (!image.length) {
       return;
     }
@@ -37,7 +39,7 @@ export default function App() {
 
     setLoading(true)
     setNavigationProgress(0)
-    const url = await postImages(imageURL, maskURL, prompt);
+    const url = await postImages(imageURL, maskURL, prompt, seed);
     let pollInterval = setInterval(async () => {
       checkProgress(url)
         .then((prog) => {
