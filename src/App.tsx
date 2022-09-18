@@ -18,7 +18,7 @@ import { PhotoEditDisplay } from './components/PhotoEditDisplay';
 import { postImages, checkProgress } from './lib/api';
 
 export default function App() {
-  const image = useImageStore(store => store.image);
+  const [image, cur] = useImageStore(store => [store.image, store.cur]);
   const setImage = useImageStore(store => store.updateImage)
   const [loading, setLoading] = useState(false)
   const editor = useEditor(state => state.editor);
@@ -30,7 +30,7 @@ export default function App() {
 
   const genImage = (prompt: string) => async () => {
     console.log("PROMT", prompt)
-    if (!image) {
+    if (!image.length) {
       return;
     }
     const [imageURL, maskURL] = editor!.exportImages();
@@ -77,8 +77,8 @@ export default function App() {
           },
         })}
       >
-        {image !== null ? (
-          <PhotoEditDisplay file={image} />
+        {cur > -1 ? (
+          <PhotoEditDisplay file={image[cur]} />
         ) : (
           <FileUpload />
         )}

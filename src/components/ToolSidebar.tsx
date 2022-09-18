@@ -1,6 +1,7 @@
 import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack } from '@mantine/core';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import { tools, useToolSelect } from "../hooks/useToolSelect";
+import { useImageStore } from '../hooks/useImageStore';
 import { TablerIcon } from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
@@ -51,13 +52,19 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 export function ToolSidebar() {
   const [active, setActive] = useToolSelect((state) => [state.selectedTool, state.changeTool]);
   const { classes, cx } = useStyles();
+  const [undo, redo] = useImageStore(store => [store.undo, store.redo]);
 
+  const handleToolSelect = (index : number) => {
+    setActive(index);
+    if(index == 6) undo();
+    if(index == 7) redo();
+  }
   const links = tools.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => handleToolSelect(index)}
     />
   ));
 

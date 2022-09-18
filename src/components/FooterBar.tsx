@@ -36,7 +36,7 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
   const [prompt, setPrompt] = useState("");
 
   const { classes, cx } = useStyles();
-  const [seed, updateSeed, image, updateImage] = useImageStore(store => [store.seed, store.updateSeed, store.image, store.updateImage])
+  const [seed, updateSeed, image, updateImage, deleteImage] = useImageStore(store => [store.seed, store.updateSeed, store.image, store.updateImage, store.deleteImage])
 
   return (
     <Footer height={60} className={classes.footer} p="md" >
@@ -86,7 +86,7 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
                 
             </Tooltip>
             <Tooltip label={"Delete"} position="top" transitionDuration={0}>
-              <ActionIcon onClick={() => updateImage(null)} color="red.0" variant="filled">
+              <ActionIcon onClick={() => deleteImage()} color="red.0" variant="filled">
                 <IconTrash />
               </ActionIcon>
             </Tooltip>
