@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navbar, Center, Tooltip, Group, MediaQuery, Button, TextInput, createStyles, Footer, Slider, UnstyledButton, Collapse } from '@mantine/core';
+import { ActionIcon, Popover, Navbar, Center, Tooltip, Group, MediaQuery, Button, TextInput, createStyles, Footer, Slider, UnstyledButton, Collapse, Container } from '@mantine/core';
 import {
   TablerIcon,
   IconBrush,
@@ -15,7 +15,8 @@ import {
   IconReload
 } from '@tabler/icons';
 import {ReactComponent as Logo} from '../assets/logo.svg';
-
+import { IconAdjustmentsHorizontal } from '@tabler/icons';
+import { useImageStore } from '../hooks/useImageStore';
 const useStyles = createStyles((theme) => ({
     footer: {
         padding: "10px !important"
@@ -40,29 +41,33 @@ type FooterBarProps = {
 };
 
 export function FooterBar({genImage}: FooterBarProps) {
-  const [promptActive, setPromptActive] = useState(true);
+  const [promptActive, setPromptActive] = useState(false);
   const [opened, setOpened] = useState(false);
 
   const { classes, cx } = useStyles();
-  
+  const [seed, updateSeed] = useImageStore(store => [store.seed, store.updateSeed])
 
   return (
     <Footer height={60} className={classes.footer} p="md" >
-
         <Group position="right">
-
             {/* <Button >
                 Toggle content
             </Button> */}
-
-
-            <Collapse in={opened} transitionDuration={200} transitionTimingFunction="linear">
-                <Group>
+            <Popover width={250} position="top" withArrow shadow="md">
+              <Popover.Target>
+                <ActionIcon color="green.1" variant="filled">
+                  <IconAdjustmentsHorizontal />
+                </ActionIcon>
+              </Popover.Target>
+              <Popover.Dropdown>
+              <Group style={{marginBottom: 5}}>
                     <Tooltip label = {"Random state initializer"}>
                       <span className={classes.sliderTitle}> Seed: </span>
                     </Tooltip>
                     <Slider
-                        size="lg"
+                        size="md"
+                        value={seed}
+                        onChange={updateSeed}
                         className={classes.slider}
                         showLabelOnHover={false}
                         marks={[
@@ -71,15 +76,11 @@ export function FooterBar({genImage}: FooterBarProps) {
                         ]}
                     />
                 </Group>
-            </Collapse>
+              </Popover.Dropdown>
+            </Popover>
 
-            <Tooltip label={"Collapse"} position="top" transitionDuration={0}>
-                <UnstyledButton onClick={() => setOpened((o) => !o)}>
-                    {opened ? <IconChevronRight stroke={1.5} /> : <IconChevronLeft stroke={1.5} />}
-                </UnstyledButton>
-            </Tooltip>
             
-            <Button disabled = {promptActive} onClick = {genImage}>Generate</Button>
+            
             <TextInput className={classes.input}
                 placeholder="Your prompt"
                 radius="md"
@@ -87,12 +88,13 @@ export function FooterBar({genImage}: FooterBarProps) {
                 withAsterisk
                 disabled = {promptActive}
             />
+            <Button disabled = {promptActive} color="green.1" onClick = {genImage}>Generate</Button>
             <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <UnstyledButton>
                     <IconReload stroke={1.5} />
                 </UnstyledButton>
             </Tooltip>
-
+                    
             {/* <Tooltip label={label} position="right" transitionDuration={0}>
                 <UnstyledButton >
                     <Icon stroke={1.5} />
