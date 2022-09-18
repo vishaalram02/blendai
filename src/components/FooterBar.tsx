@@ -15,6 +15,7 @@ import {
   IconReload
 } from '@tabler/icons';
 import {ReactComponent as Logo} from '../assets/logo.svg';
+import { theme } from '../theme';
 
 const useStyles = createStyles((theme) => ({
     footer: {
@@ -31,6 +32,16 @@ const useStyles = createStyles((theme) => ({
     },
     input: {
       width: "40vw"
+    },
+    reload: {
+      '&:hover': {
+        color: theme.colors.green[1]
+      },
+    },
+    generate: {
+      '&:hover': {
+        color: theme.colors.green[0]
+    },
     }
   }),
 );
@@ -79,7 +90,7 @@ export function FooterBar({genImage}: FooterBarProps) {
                 </UnstyledButton>
             </Tooltip>
             
-            <Button disabled = {!promptActive} onClick = {genImage}>Generate</Button>
+            <Button className={classes.generate} disabled = {!promptActive} onClick = {genImage} variant="gradient" gradient={{from: 'green.1', to: 'green.2', deg: 45}} >Generate</Button>
             <TextInput className={classes.input}
                 placeholder="Your prompt"
                 radius="md"
@@ -87,7 +98,7 @@ export function FooterBar({genImage}: FooterBarProps) {
                 withAsterisk
                 disabled = {!promptActive}
             />
-            <Tooltip label={"Reload"} position="top" transitionDuration={0}>
+            <Tooltip className={classes.reload} label={"Reload"} position="top" transitionDuration={0}>
                 <UnstyledButton>
                     <IconReload stroke={1.5} />
                 </UnstyledButton>
