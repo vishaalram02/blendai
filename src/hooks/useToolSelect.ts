@@ -4,7 +4,7 @@ import create from "zustand";
 export const tools = [
   { icon: icons.IconHandStop, label: 'Pan Tool', customize: false, },
   { icon: icons.IconBrush, label: 'Brush', customize: true, },
-  { icon: icons.IconEraser, label: 'Eraser', customize: true, },
+  { icon: icons.IconWand, label: 'Magic Wand', customize: false },
   { icon: icons.IconRectangle, label: 'Rectangle Select', customize: false, },
   { icon: icons.IconZoomIn, label: 'Zoom In', customize: false, },
   { icon: icons.IconZoomOut, label: 'Zoom Out', customize: false, },
@@ -16,7 +16,7 @@ export enum ToolType {
   Hand,
   Brush,
   Eraser,
-  Rectangle,
+  Wand,
   ZoomIn,
   ZoomOut
 }

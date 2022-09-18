@@ -16,6 +16,7 @@
     "@tabler/icons": "^1.96.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-spring": "^9.5.4",
     "vite-plugin-svgr": "^2.2.1",
     "zustand": "^4.1.1"
   },
