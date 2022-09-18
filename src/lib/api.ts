@@ -1,5 +1,6 @@
+const ngrok = "https://8abd-18-10-156-187.ngrok.io"
 async function postImages(imageb64: string, maskb64: string, prompt: string):Promise<string>{
-    const url = "https://dcb2-18-10-156-187.ngrok.io/processImage"
+    const url = ngrok + "/processImage"
     console.log("posting image")
     return fetch(url, {
         method: "POST",
@@ -18,7 +19,7 @@ async function postImages(imageb64: string, maskb64: string, prompt: string):Pro
 }
 
 async function checkProgress(url: string):Promise<string>{
-    return fetch(url, {mode: 'cors'})
+    return fetch(ngrok+url, {mode: 'cors'})
     .then((response) => response.text())
 }
 

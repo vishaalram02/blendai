@@ -40,8 +40,9 @@ type FooterBarProps = {
   genImage: () => void;
 };
 
-export function FooterBar({genImage}: FooterBarProps) {
+export function FooterBar({genImage}: FooterBarProps, loading: boolean) {
   const [opened, setOpened] = useState(false);
+  const [prompt, setPrompt] = useState("");
 
   const { classes, cx } = useStyles();
   const [seed, updateSeed, image] = useImageStore(store => [store.seed, store.updateSeed, store.image])
@@ -83,10 +84,11 @@ export function FooterBar({genImage}: FooterBarProps) {
                 placeholder="Your prompt"
                 radius="md"
                 size="sm"
-                withAsterisk
-                disabled = {!image}
+                value={prompt}
+                onChange={(event) => setPrompt(event.currentTarget.value)}
+                disabled = {!image || loading}
             />
-            <Button disabled = {!image} color="green.1" onClick = {genImage}>Generate</Button>
+            <Button disabled = {!image || loading} color="green.1" onClick = {genImage(prompt)}>Generate</Button>
             <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <UnstyledButton>
                     <IconReload stroke={1.5} />
