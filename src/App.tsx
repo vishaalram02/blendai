@@ -11,15 +11,23 @@ import { ToolSidebar } from "./components/ToolSidebar";
 import { FooterBar } from "./components/FooterBar";
 
 import { FileUpload } from "./components/FileUpload";
-import { useImageStore } from "./hooks/useImageStore";
+import { useImageStore, setImageStore } from "./hooks/useImageStore";
 import { PhotoEditDisplay } from './components/PhotoEditDisplay';
 
 import { postImages, checkProgress } from './lib/api';
 
 export default function App() {
   const image = useImageStore(store => store.image);
+  const setImage = useImageStore(store => store.updateImage)
   const [loading, setLoading] = useState(false)
-  const genImage = (prompt) => () => {
+
+   async function dataUrlToFile(dataUrl: string): Promise<File> {
+    const res: Response = await fetch(dataUrl);
+    const blob: Blob = await res.blob();
+    return blob    
+  }
+
+  const genImage = (prompt : string) => () => {
     console.log("PROMT", prompt)
     const reader = new FileReader();
     if(!image){
@@ -33,21 +41,27 @@ export default function App() {
       setLoading(true)
       setNavigationProgress(0)
       const url = await postImages(reader.result, reader.result, prompt);
-      let pollInterval = setInterval(()=>{
+      let pollInterval = setInterval(async ()=>{
         checkProgress(url)
         .then((prog)=>{
-          setNavigationProgress(5)
+          setNavigationProgress(5);
           if(prog.startsWith("data")){
             console.log("FINISHED PROCESSING", prog)
-            clearInterval(pollInterval)
-            setNavigationProgress(100)
-            setLoading(false)
+            clearInterval(pollInterval);
+            setNavigationProgress(100);
+            setLoading(false);
+            dataUrlToFile(prog)
+            .then((blob)=>{
+              console.log("BLBOBLBLLB EHERERE", blob)
+              setImage(blob)
+            })
           }
           else{
-            setNavigationProgress(prog)
-            console.log(prog)
+            setNavigationProgress(parseInt(prog));
+            console.log(prog);
           }
         })
+        
       }
       , 200)
       
