@@ -33,7 +33,7 @@ export default function App() {
     if (!image) {
       return;
     }
-    const [imageURL, maskURL] = editor!.exportImages();
+    const [imageURL, maskURL] = await editor!.exportImages();
 
     setLoading(true)
     setNavigationProgress(0)
