@@ -37,10 +37,11 @@ const useStyles = createStyles((theme) => ({
 );
 
 type FooterBarProps = {
-  genImage: () => void;
+  genImage: (prompt:string) => () => void,
+  loading: boolean,
 };
 
-export function FooterBar({genImage}: FooterBarProps, loading: boolean) {
+export function FooterBar({genImage, loading}: FooterBarProps,) {
   const [opened, setOpened] = useState(false);
   const [prompt, setPrompt] = useState("");
 

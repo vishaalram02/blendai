@@ -19,7 +19,7 @@ import { postImages, checkProgress } from './lib/api';
 export default function App() {
   const image = useImageStore(store => store.image);
   const [loading, setLoading] = useState(false)
-  const genImage = (prompt) => () => {
+  const genImage = (prompt : string) => () => {
     console.log("PROMT", prompt)
     const reader = new FileReader();
     if(!image){
@@ -36,16 +36,16 @@ export default function App() {
       let pollInterval = setInterval(()=>{
         checkProgress(url)
         .then((prog)=>{
-          setNavigationProgress(5)
+          setNavigationProgress(5);
           if(prog.startsWith("data")){
             console.log("FINISHED PROCESSING", prog)
-            clearInterval(pollInterval)
-            setNavigationProgress(100)
-            setLoading(false)
+            clearInterval(pollInterval);
+            setNavigationProgress(100);
+            setLoading(false);
           }
           else{
-            setNavigationProgress(prog)
-            console.log(prog)
+            setNavigationProgress(parseInt(prog));
+            console.log(prog);
           }
         })
       }
