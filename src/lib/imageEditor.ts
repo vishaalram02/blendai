@@ -156,7 +156,7 @@ updateTool(tool: ToolType) {
 
   const actualDimensions = this.calculateRatios();
 
-  console.log(actualDimensions);
+  // console.log(actualDimensions);
   renderTarget.drawImage(image, actualDimensions.x, actualDimensions.y, actualDimensions.width, actualDimensions.height);
 }
 
@@ -187,7 +187,7 @@ updateTool(tool: ToolType) {
   const imageWidth = image.width;
   const imageHeight = image.height;
 
-  console.log(canvasWidth, canvasHeight, imageWidth, imageHeight);
+  // console.log(canvasWidth, canvasHeight, imageWidth, imageHeight);
 
   // const aspectRatio = imageHeight / imageWidth;
 
