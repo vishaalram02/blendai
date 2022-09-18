@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Group, Text, Container, Title, Center } from '@mantine/core';
+import { Group, Text, Container, Title, Center, Stack } from '@mantine/core';
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons';
 import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { useImageStore } from "../hooks/useImageStore";
@@ -33,9 +33,14 @@ export function FileUpload() {
     return (
         <Container size="lg">
             <Center>
-                <Title onMouseMove={handleMouseMove} size={90} variant="gradient" gradient={{ from: 'green.2', to: 'green.1', deg: coords.x }} style={{ userSelect: "none", fontFamily: "Nunito", margin: 40 }}>
-                    stabilify
-                </Title>
+                <Stack>
+                    <Title onMouseMove={handleMouseMove} size={80} variant="gradient" gradient={{ from: 'green.2', to: 'green.1', deg: coords.x }} style={{ userSelect: "none", fontFamily: "Nunito", marginTop: 10, textAlign: "center" }}>
+                        Blend.ai
+                    </Title>
+                    <Text style={{marginBottom: 40,fontFamily: "Verdana", fontStyle: "italic"}} size={20}>Blend anything you can imagine into reality</Text>
+                
+                </Stack>
+                
             </Center>
             <Dropzone
                 onDrop={(files) => updateImage(files[0])}

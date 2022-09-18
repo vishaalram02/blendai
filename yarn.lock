@@ -525,7 +525,7 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mantine/core@5.3.3":
+"@mantine/core@^5.3.3":
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/@mantine/core/-/core-5.3.3.tgz#dbdd3c18eabe4dd90962992365eb22c90a4671af"
   integrity sha512-q44jPxOfd0YFaWgZua3DtEByNbpums1tfNPdaK6aYh/dXS80e9acZtY9F7LD/aKs0+YK6RNlVgP0bMxDaLF0xg==
@@ -544,10 +544,17 @@
     "@mantine/utils" "5.3.3"
     react-dropzone "14.2.2"
 
-"@mantine/hooks@5.3.3":
+"@mantine/hooks@^5.3.3":
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-5.3.3.tgz#3baec5f620316e2395bd88624dd323a2f5dab0f8"
   integrity sha512-90GD3pX7CanPHC35qxuVr7jNJBS9/bLJiofPUuqdKyW547D8RLRRNofoelQ7y2wKiaLhHC2oV1wUPOAk/6Oz8Q==
+
+"@mantine/nprogress@^5.3.3":
+  version "5.3.3"
+  resolved "https://registry.yarnpkg.com/@mantine/nprogress/-/nprogress-5.3.3.tgz#487d68d102ae404b21adf803985972484e8638a3"
+  integrity sha512-B3DVt+DYMbB/g+Ls/2CZbGYN0naUNYjtqD45GHIJ/JqPOrncXd/aCGxzWq/RLkeQD7xDluZIe3R4tSN8GJ/KGg==
+  dependencies:
+    "@mantine/utils" "5.3.3"
 
 "@mantine/styles@5.3.3":
   version "5.3.3"
