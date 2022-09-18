@@ -4,6 +4,12 @@ export type ImageEditorOptions = {
   readonly canvas: HTMLCanvasElement;
   readonly image: ImageBitmap;
   readonly initialTool: ToolType;
+  readonly initialBrushSize: number;
+}
+
+export type ImageUpdateToolOptions = {
+  readonly tool: ToolType;
+  readonly brushSize: number;
 }
 
 type Position = {
@@ -35,14 +41,12 @@ export class ImageEditor {
   readonly layers: Record<string, { element: HTMLCanvasElement, context: CanvasRenderingContext2D }>;
 
   // Mutable state.
-  x: number;
-  y: number;
   toolType: ToolType;
+  brushSize: number;
   positionBuffer: Position[];
 
   constructor(readonly options: ImageEditorOptions) {
-    this.x = -1;
-    this.y = -1;
+    this.brushSize = options.initialBrushSize;
     this.toolType = options.initialTool;
     this.layers = {};
     this.positionBuffer = [];
@@ -124,8 +128,11 @@ export class ImageEditor {
    * 
    * @returns base64 encoding data URLs. one for the image, one for the mask.
    */
-  exportImages(): [string, string] {
-    return [LayerNames.Base, LayerNames.Mask].map(layer => this.layers[layer]).map(layer => layer.element.toDataURL()) as [string, string];
+  async exportImages(): Promise<[string, string]> {
+    const mask = this.layers[LayerNames.Mask];
+    const base = this.layers[LayerNames.Base];
+
+    return [base.element.toDataURL(), mask.element.toDataURL()];
   }
 
   /**
@@ -156,7 +163,7 @@ export class ImageEditor {
       context.fillStyle = '#9ACC59';
 
       context.beginPath();
-      context.arc((mouseX - offsetX) * conversionFactor, (mouseY - offsetY) * conversionFactor, 40 * conversionFactor, 0, 2 * Math.PI);
+      context.arc((mouseX - offsetX) * conversionFactor, (mouseY - offsetY) * conversionFactor, this.brushSize * conversionFactor, 0, 2 * Math.PI);
       context.fill();
       this.render();
       // this.positionBuffer.push({ x: (mouseX - offsetX) * conversionFactor, y: (mouseY - offsetY) * conversionFactor });
@@ -181,8 +188,9 @@ export class ImageEditor {
    * 
    * @param tool the next tool to use with image editor
    */
-  updateTool(tool: ToolType) {
-    this.toolType = tool;
+  updateTool(options: ImageUpdateToolOptions) {
+    this.toolType = options.tool;
+    this.brushSize = options.brushSize;
   }
 
   private drawImage(layer: LayerNames) {
