@@ -1,35 +1,60 @@
 import { useRef, useEffect } from "react";
-import { ImageEditor } from "../lib/image-editor";
+import { ImageEditor } from "../lib/imageEditor";
 import { Center } from "@mantine/core";
-import { useElementSize } from "@mantine/hooks";
+import { useElementSize, useResizeObserver } from "@mantine/hooks";
+import { useMouseState } from "../hooks/useMouseState";
+import { useToolSelect } from "../hooks/useToolSelect";
 
 export type PhotoEditDisplayProps = {
   file: File;
 }
 
-
-type Size = { width: number, height: number };
-
 export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   const { ref: containerRef, width, height } = useElementSize();
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const editor = useRef<ImageEditor | null>(null);
 
   const url = URL.createObjectURL(file);
   const canvasWidth = Math.floor(width * 0.9);
   const canvasHeight = Math.floor(height * 0.9);
+  const { mousePosition, ref: canvasRef } = useMouseState(editor);
+  const [resizeRef, _] = useResizeObserver();
+  const tool = useToolSelect(store => store.selectedTool);
 
   useEffect(() => {
-    if (canvasRef.current !== null) {
+    if (canvasRef.current !== null && editor.current === null) {
       const img = new Image;
 
       img.onload = async function () {
-        editor.current = new ImageEditor({ canvas: canvasRef.current!, image: await createImageBitmap(this as HTMLImageElement) });
+        editor.current = new ImageEditor({
+          canvas: canvasRef.current!,
+          initialTool: tool,
+          image: await createImageBitmap(this as HTMLImageElement)
+        });
       };
 
       img.src = url;
     }
   }, [canvasRef, height, width]);
+
+  useEffect(() => {
+    if (resizeRef.current !== null) {
+      if (editor.current !== null) {
+        editor.current.resizeBackbuffer();
+        editor.current.render();
+      }
+    }
+  }, [resizeRef]);
+
+  useEffect(() => {
+    console.log("tool changed");
+    if (editor.current !== null) {
+      editor.current.updateTool(tool);
+    }
+  }, [tool]);
+
+  // if (!!editor.current) {
+  //   console.log(editor.current.layers[LayerNames.Base].element.toDataURL());
+  // }
 
   // useEffect(() => {
   //   if (!!imageRef.current) {
@@ -68,14 +93,16 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
 
   return (
     <Center ref={containerRef} sx={{ height: "100%" }}>
-      <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
-      {/* <img
+      <Center ref={resizeRef} sx={{ height: "100%", width: "100%" }}>
+        <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
+        {/* <img
         width={size ? size.width : undefined}
         height={size ? size.height : undefined}
         style={{ objectFit: 'contain', maxWidth: '100%', height: "auto" }}
         ref={imageRef}
         src={url}
       /> */}
+      </Center>
     </Center>
   );
 }

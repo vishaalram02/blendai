@@ -102,8 +102,6 @@ export function FooterBar({genImage}: FooterBarProps, loading: boolean) {
             </Tooltip> */}
 
         </Group>
-    
-        
     </Footer>
   );
 }
