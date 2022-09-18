@@ -19,11 +19,11 @@ export default function App() {
       return;
     }
     reader.readAsDataURL(image);
-    reader.onload = function () {
+    reader.onload = async function () {
       if(typeof reader.result != 'string'){
         return;
       }
-      postImages(reader.result, reader.result, "orange");
+      const url = await postImages(reader.result, reader.result, "orange");      
     }
   };
   return (

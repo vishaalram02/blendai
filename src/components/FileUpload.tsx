@@ -34,10 +34,10 @@ export function FileUpload() {
         <Container size="lg">
             <Center>
                 <Stack>
-                    <Title onMouseMove={handleMouseMove} size={120} variant="gradient" gradient={{ from: 'green.2', to: 'green.1', deg: coords.x }} style={{ userSelect: "none", fontFamily: "Nunito", marginTop: 10, textAlign: "center" }}>
+                    <Title onMouseMove={handleMouseMove} size={80} variant="gradient" gradient={{ from: 'green.2', to: 'green.1', deg: coords.x }} style={{ userSelect: "none", fontFamily: "Nunito", marginTop: 10, textAlign: "center" }}>
                         Blend.ai
                     </Title>
-                    <Text style={{marginBottom: 40,fontFamily: "Verdana", fontStyle: "italic"}} size={24}>Blend anything you can imagine into reality</Text>
+                    <Text style={{marginBottom: 40,fontFamily: "Verdana", fontStyle: "italic"}} size={20}>Blend anything you can imagine into reality</Text>
                 
                 </Stack>
                 
