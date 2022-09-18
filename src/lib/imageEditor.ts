@@ -81,6 +81,17 @@ export class ImageEditor {
     this.render();
   }
 
+  updateImage(image: ImageBitmap): void {
+    this.layers[LayerNames.Base].element.width = image.width;
+    this.layers[LayerNames.Base].element.height = image.height;
+    this.layers[LayerNames.Base].context.drawImage(image, 0, 0);
+
+    this.layers[LayerNames.Mask].element.width = image.width;
+    this.layers[LayerNames.Mask].element.height = image.height;
+
+    this.render();
+  }
+
   /**
    * Initializes canvas based on contents of file.
    */

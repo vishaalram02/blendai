@@ -23,58 +23,53 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const editor = useEditor(state => state.editor);
 
-   async function dataUrlToFile(dataUrl: string): Promise<Blob> {
+  async function dataUrlToFile(dataUrl: string): Promise<Blob> {
     const res: Response = await fetch(dataUrl);
     return res.blob();
   }
 
-  const genImage = (prompt : string) => () => {
+  const genImage = (prompt: string) => async () => {
     console.log("PROMT", prompt)
-    const reader = new FileReader();
-    if(!image){
+    if (!image) {
       return;
     }
     const [imageURL, maskURL] = editor!.exportImages();
-    reader.readAsDataURL(image);
-    reader.onload = async function () {
-      if(typeof reader.result != 'string'){
-        return;
-      }
-      setLoading(true)
-      setNavigationProgress(0)
-      const url = await postImages(reader.result, reader.result, prompt);
-      let pollInterval = setInterval(async ()=>{
-        checkProgress(url)
-        .then((prog)=>{
+
+    setLoading(true)
+    setNavigationProgress(0)
+    const url = await postImages(imageURL, maskURL, prompt);
+    let pollInterval = setInterval(async () => {
+      checkProgress(url)
+        .then((prog) => {
           setNavigationProgress(5);
-          if(prog.startsWith("data")){
+          if (prog.startsWith("data")) {
             console.log("FINISHED PROCESSING", prog)
             clearInterval(pollInterval);
             setNavigationProgress(100);
             setLoading(false);
             dataUrlToFile(prog)
-            .then((blob)=>{
-              console.log("BLBOBLBLLB EHERERE", blob)
-              setImage(blob)
-            })
+              .then((blob) => {
+                console.log("BLBOBLBLLB EHERERE", blob)
+                setImage(blob)
+              })
           }
-          else{
+          else {
             setNavigationProgress(parseInt(prog));
             console.log(prog);
           }
         })
-        
-      }
-      , 200)
-      
+
     }
-  };
+      , 200)
+
+  }
+
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       <NavigationProgress />
       <AppShell
         padding="xl"
-        footer= {<FooterBar genImage={genImage} loading={loading}/>}
+        footer={<FooterBar genImage={genImage} loading={loading} />}
         navbar={<ToolSidebar />}
         styles={(theme) => ({
           main: {

@@ -56,6 +56,18 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
 
   useEffect(() => {
     if (editor.current !== null) {
+      const img = new Image;
+
+      img.onload = async function () {
+        editor.current!.updateImage(await createImageBitmap(this as HTMLImageElement))
+      };
+
+      img.src = url;
+    }
+  }, [file]);
+
+  useEffect(() => {
+    if (editor.current !== null) {
       editor.current.resizeBackbuffer();
       editor.current.render();
     }
