@@ -26,7 +26,6 @@ type ImageDimensions = {
 
 export enum LayerNames {
   World = "World",
-  Viewport = "Viewport",
   Mask = "Mask",
   Base = "Base",
   Offscreen = "Offscreen"
@@ -44,12 +43,16 @@ export class ImageEditor {
   toolType: ToolType;
   brushSize: number;
   positionBuffer: Position[];
+  previousPosition: Position;
+  offset: Position;
 
   constructor(readonly options: ImageEditorOptions) {
     this.brushSize = options.initialBrushSize;
     this.toolType = options.initialTool;
     this.layers = {};
     this.positionBuffer = [];
+    this.previousPosition = { x: -1, y: -1 };
+    this.offset = { x: 0, y: 0 };
 
     Object.keys(LayerNames).map((layerName) => {
       const element = layerName === LayerNames.World ? options.canvas : document.createElement('canvas') as HTMLCanvasElement;
@@ -174,42 +177,59 @@ export class ImageEditor {
       context.globalCompositeOperation = previousCompositeOperation!;
     }
 
-    if(this.toolType === ToolType.Wand) {
-      context.fillStyle = '#9ACC59';
-      this.floodFill(base, context, Math.floor((mouseX - offsetX) * conversionFactor),  Math.floor((mouseY - offsetY) * conversionFactor));
+    if (this.toolType == ToolType.Hand) {
+      const delta = this.delta(this.previousPosition, { x: mouseX, y: mouseY });
+      console.log(delta);
+      const smoothingFactor = 0.7;
+
+      this.offset = { x: this.offset.x + delta.x * smoothingFactor, y: this.offset.y + delta.y * smoothingFactor };
+      this.render();
     }
 
+    if (this.toolType === ToolType.Wand) {
+      context.fillStyle = '#9ACC59';
+      this.floodFill(base, context, Math.floor((mouseX - offsetX) * conversionFactor), Math.floor((mouseY - offsetY) * conversionFactor));
+    }
+
+    this.previousPosition = { x: mouseX, y: mouseY };
   }
 
-  private getColor(data: Uint8ClampedArray, x : number, y: number, width: number) {
-    const offset : number = y*width + x;
-    return [data[offset], data[offset+1], data[offset+2], data[offset+3]];
+  private delta(a: Position, b: Position): Position {
+    return {
+      x: b.x - a.x,
+      y: b.y - a.y
+    }
   }
-  
-  private floodFill (image : CanvasRenderingContext2D, mask : CanvasRenderingContext2D, x : number, y : number) {
+
+  private getColor(data: Uint8ClampedArray, x: number, y: number, width: number) {
+    const offset: number = y * width + x;
+    return [data[offset], data[offset + 1], data[offset + 2], data[offset + 3]];
+  }
+
+  private floodFill(image: CanvasRenderingContext2D, mask: CanvasRenderingContext2D, x: number, y: number) {
     const width = this.getSize(LayerNames.Base).width;
     const height = this.getSize(LayerNames.Base).height;
-    const imageData = image.getImageData(0,0,width,height).data;
-    
-    let xQueue : number[] = [x];
-    let yQueue : number[] = [y];
-    const color = image.getImageData(x,y,1,1).data;
+    const imageData = image.getImageData(0, 0, width, height).data;
+
+    let xQueue: number[] = [x];
+    let yQueue: number[] = [y];
+    const color = image.getImageData(x, y, 1, 1).data;
     mask.fillRect(x, y, 1, 1);
-    while(true){
+    while (true) {
       const xPos = xQueue.shift();
       const yPos = yQueue.shift();
-      if(xPos === undefined || yPos === undefined){
+      if (xPos === undefined || yPos === undefined) {
         break;
       }
-      const next = [[xPos+1, yPos], [xPos-1, yPos], [xPos, yPos-1], [xPos, yPos+1]];
-      for(let i=0;i<4;++i){
-       // const maskColor = mask.getImageData(next[i][0], next[i][1], 1, 1).data;
-      const imageColor = image.getImageData(next[i][0], next[i][1], 1, 1).data;
-       const maskColor = mask.getImageData(next[i][0], next[i][1], 1, 1).data;
-       //const imageColor = this.getColor(imageData, next[i][0], next[i][1], width);
-       //console.log(maskColor, imageColor);
-        const diff = 0.3*(imageColor[0]-color[0])**2+0.59*(imageColor[1]-color[1])**2+0.11*(imageColor[2]-color[2])**2;
-        if(0 <= next[i][0] && next[i][0] < width && 0 <= next[i][1] && next[i][1] < height && !maskColor[0] && !maskColor[1] && !maskColor[2] && diff < 60){
+      const next = [[xPos + 1, yPos], [xPos - 1, yPos], [xPos, yPos - 1], [xPos, yPos + 1]];
+      for (let i = 0; i < 4; ++i) {
+        // const maskColor = mask.getImageData(next[i][0], next[i][1], 1, 1).data;
+        const imageColor = image.getImageData(next[i][0], next[i][1], 1, 1).data;
+        const maskColor = mask.getImageData(next[i][0], next[i][1], 1, 1).data;
+        //const imageColor = this.getColor(imageData, next[i][0], next[i][1], width);
+        //console.log(maskColor, imageColor);
+        const diff = 0.3 * (imageColor[0] - color[0]) ** 2 + 0.59 * (imageColor[1] - color[1]) ** 2 + 0.11 * (imageColor[2] - color[2]) ** 2;
+        if (0 <= next[i][0] && next[i][0] < width && 0 <= next[i][1] && next[i][1] < height && !maskColor[0] && !maskColor[1] && !maskColor[2] && diff < 60) {
           xQueue.push(next[i][0]);
           yQueue.push(next[i][1]);
           mask.fillRect(next[i][0], next[i][1], 1, 1);
@@ -249,13 +269,15 @@ export class ImageEditor {
   }
 
   private flipBuffers(): void {
-    this.layers[LayerNames.World].context.drawImage(this.layers[LayerNames.Offscreen].element, 0, 0);
+    const { context, element } = this.layers[LayerNames.World];
+    context.clearRect(0, 0, element.width, element.height);
+
+    this.layers[LayerNames.World].context.drawImage(this.layers[LayerNames.Offscreen].element, this.offset.x, this.offset.y);
   }
 
   private clearCanvas(): void {
     const { context, element } = this.layers[LayerNames.Offscreen];
 
-    context.fillStyle = "#ffffff";
     context.clearRect(0, 0, element.width, element.height);
   }
 

@@ -66,7 +66,7 @@ export default function App() {
 
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
-      <NavigationProgress />
+      <NavigationProgress color="green.2" size={5} />
       <AppShell
         padding="xl"
         footer={<FooterBar genImage={genImage} loading={loading} />}
