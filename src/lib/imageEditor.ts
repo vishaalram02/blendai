@@ -104,6 +104,15 @@ export class ImageEditor {
   }
 
   /**
+   * Exports and image and its mask.
+   * 
+   * @returns base64 encoding data URLs. one for the image, one for the mask.
+   */
+  exportImages(): [string, string] {
+    return [LayerNames.Base, LayerNames.Mask].map(layer => this.layers[layer]).map(layer => layer.element.toDataURL()) as [string, string];
+  }
+
+  /**
    * Updates the current internal state of the position inside editor.
    * 
    * @param x new x position inside canvas

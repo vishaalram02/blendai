@@ -4,9 +4,10 @@ import { Center } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import { useMouseState } from "../hooks/useMouseState";
 import { ToolType, useToolSelect } from "../hooks/useToolSelect";
+import { useEditor } from "../hooks/useEditor";
 
 export type PhotoEditDisplayProps = {
-  file: File;
+  file: Blob;
 }
 
 function getCursor(tool: ToolType): string {
@@ -35,6 +36,7 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   const canvasHeight = useMemo(() => Math.floor(height * 0.9), [height]);
   const { ref: canvasRef } = useMouseState(editor);
   const tool = useToolSelect(store => store.selectedTool);
+  const setEditor = useEditor(store => store.setEditor);
 
   useEffect(() => {
     if (canvasRef.current !== null && editor.current === null) {
@@ -65,6 +67,10 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
       editor.current.updateTool(tool);
     }
   }, [tool]);
+
+  useEffect(() => {
+    setEditor(editor.current);
+  }), [editor];
 
   return (
     <Center ref={containerRef} sx={{ height: "100%", "&:hover": { cursor: getCursor(tool) } }}>

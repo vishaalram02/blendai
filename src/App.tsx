@@ -11,7 +11,8 @@ import { ToolSidebar } from "./components/ToolSidebar";
 import { FooterBar } from "./components/FooterBar";
 
 import { FileUpload } from "./components/FileUpload";
-import { useImageStore, setImageStore } from "./hooks/useImageStore";
+import { useImageStore } from "./hooks/useImageStore";
+import { useEditor } from "./hooks/useEditor";
 import { PhotoEditDisplay } from './components/PhotoEditDisplay';
 
 import { postImages, checkProgress } from './lib/api';
@@ -20,11 +21,11 @@ export default function App() {
   const image = useImageStore(store => store.image);
   const setImage = useImageStore(store => store.updateImage)
   const [loading, setLoading] = useState(false)
+  const editor = useEditor(state => state.editor);
 
-   async function dataUrlToFile(dataUrl: string): Promise<File> {
+   async function dataUrlToFile(dataUrl: string): Promise<Blob> {
     const res: Response = await fetch(dataUrl);
-    const blob: Blob = await res.blob();
-    return blob    
+    return res.blob();
   }
 
   const genImage = (prompt : string) => () => {
@@ -33,6 +34,7 @@ export default function App() {
     if(!image){
       return;
     }
+    const [imageURL, maskURL] = editor!.exportImages();
     reader.readAsDataURL(image);
     reader.onload = async function () {
       if(typeof reader.result != 'string'){
