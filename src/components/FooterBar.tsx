@@ -1,17 +1,6 @@
 import { useState } from 'react';
 import { ActionIcon, Popover, Navbar, Center, Tooltip, Group, MediaQuery, Button, TextInput, createStyles, Footer, Slider, UnstyledButton, Collapse, Container } from '@mantine/core';
 import {
-  TablerIcon,
-  IconBrush,
-  IconZoomIn,
-  IconWand,
-  IconRectangle,
-  IconLasso,
-  IconColorPicker,
-  IconBucket,
-  IconHandStop,
-  IconChevronLeft,
-  IconChevronRight,
   IconReload, 
   IconTrash,
 } from '@tabler/icons';

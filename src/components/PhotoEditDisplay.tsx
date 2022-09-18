@@ -14,7 +14,7 @@ function getCursor(tool: ToolType): string {
   switch (tool) {
     case ToolType.Brush:
     case ToolType.Eraser:
-    case ToolType.Rectangle:
+    case ToolType.Wand:
       return "crosshair";
     case ToolType.Hand:
       return "grab";
