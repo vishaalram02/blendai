@@ -2,14 +2,14 @@ import * as icons from "@tabler/icons";
 import create from "zustand";
 
 export const tools = [
-  { icon: icons.IconHandStop, label: 'Pan Tool' },
-  { icon: icons.IconBrush, label: 'Brush' },
-  { icon: icons.IconEraser, label: 'Eraser' },
-  { icon: icons.IconWand, label: 'Magic Wand' },
-  { icon: icons.IconZoomIn, label: 'Zoom In' },
-  { icon: icons.IconZoomOut, label: 'Zoom Out' },
-  { icon: icons.IconRotate2, label: 'Undo' },
-  { icon: icons.IconRotateClockwise2, label: 'Redo' },
+  { icon: icons.IconHandStop, label: 'Pan Tool', customize: false, },
+  { icon: icons.IconBrush, label: 'Brush', customize: true, },
+  { icon: icons.IconEraser, label: 'Eraser', customize: true, },
+  { icon: icons.IconWand, label: 'Magic Wand', customize: false },
+  { icon: icons.IconZoomIn, label: 'Zoom In', customize: false, },
+  { icon: icons.IconZoomOut, label: 'Zoom Out', customize: false, },
+  { icon: icons.IconRotate2, label: 'Undo', customize: false, },
+  { icon: icons.IconRotateClockwise2, label: 'Redo', customize: false, },
 ];
 
 export enum ToolType {
@@ -22,11 +22,15 @@ export enum ToolType {
 }
 
 interface ToolState {
-  selectedTool: number,
+  selectedTool: number;
+  brushSize: number;
   changeTool: (t: number) => void;
+  changeBrushSize: (t: number) => void;
 }
 
 export const useToolSelect = create<ToolState>((set) => ({
   selectedTool: ToolType.Brush,
-  changeTool: (t: number) => set(() => ({ selectedTool: t }))
+  brushSize: 15,
+  changeTool: (t: number) => set(() => ({ selectedTool: t })),
+  changeBrushSize: (t: number) => set(() => ({ brushSize: t }))
 }));

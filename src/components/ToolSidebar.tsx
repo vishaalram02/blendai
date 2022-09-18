@@ -1,8 +1,9 @@
-import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack } from '@mantine/core';
+import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack, Text, Menu, Slider, ColorInput, Popover } from '@mantine/core';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import { tools, useToolSelect } from "../hooks/useToolSelect";
+import { IconPalette, IconArrowsDiagonal, TablerIcon } from '@tabler/icons';
+import { useEffect, useState } from 'react';
 import { useImageStore } from '../hooks/useImageStore';
-import { TablerIcon } from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -34,18 +35,71 @@ const useStyles = createStyles((theme) => ({
 interface NavbarLinkProps {
   icon: TablerIcon;
   label: string;
+  customize: boolean;
   active?: boolean;
   onClick?(): void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, label, customize, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
+  const [brushSize, setBrushSize] = useToolSelect(state => [state.brushSize, state.changeBrushSize]);
+  const [opened, open] = useState(false);
+
+  const Wrapper = ({ children }: { children: JSX.Element }) => {
+    if (customize && active) {
+      return (
+        <Popover
+          onChange={open}
+          opened={opened}
+          trapFocus
+          position="right-start"
+          withArrow
+          shadow="md"
+          width={200}
+        >
+          <Popover.Target>
+            {children}
+          </Popover.Target>
+          <Popover.Dropdown sx={(theme) => ({ background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}>
+            <Stack spacing={12}>
+              <Stack spacing={4}>
+                <Text size="sm">Brush Size</Text>
+                <Slider
+                  data-autofocus
+                  value={brushSize}
+                  min={1}
+                  max={45}
+                  // defaultValue={brushSize}
+                  onChange={setBrushSize}
+                  color="green.1"
+                  size="xs"
+                />
+              </Stack>
+              <ColorInput label="Color" defaultValue="#9ACC59" />
+            </Stack>
+          </Popover.Dropdown>
+        </Popover >
+      );
+    } else {
+      return (
+        <>
+          {children}
+        </>
+      );
+    }
+  }
+
   return (
-    <Tooltip label={label} position="top" transitionDuration={0}>
-      <UnstyledButton onClick={onClick} className={cx(classes.link, { [classes.active]: active })}>
+    <Wrapper>
+      {!(active && customize) ? (<Tooltip label={label} position="right" transitionDuration={0}>
+        <UnstyledButton onClick={onClick} className={cx(classes.link, { [classes.active]: active })}>
+          <Icon stroke={1.5} />
+        </UnstyledButton>
+      </Tooltip >) : <UnstyledButton onClick={() => open(true)} className={cx(classes.link, { [classes.active]: active })}>
         <Icon stroke={1.5} />
-      </UnstyledButton>
-    </Tooltip>
+      </UnstyledButton>}
+
+    </Wrapper >
   );
 }
 
