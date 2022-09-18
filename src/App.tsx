@@ -60,7 +60,7 @@ export default function App() {
         })
 
     }
-      , 200)
+      , 1000)
 
   }
 
