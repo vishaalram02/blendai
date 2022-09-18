@@ -1,4 +1,4 @@
-const ngrok = "https://e5e9-18-10-156-187.ngrok.io"
+const ngrok = "https://18d0-18-10-156-187.ngrok.io";
 async function postImages(imageb64: string, maskb64: string, prompt: string):Promise<string>{
     const url = ngrok + "/processImage"
     // console.log("posting image")

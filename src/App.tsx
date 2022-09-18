@@ -76,7 +76,8 @@ export default function App() {
             backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[0]
           },
         })}
-      >
+      > 
+        
         {cur > -1 ? (
           <PhotoEditDisplay file={image[cur]} />
         ) : (
