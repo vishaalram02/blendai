@@ -12,12 +12,23 @@ export const tools = [
   { icon: IconZoomIn, label: 'Zoom In' },
 ];
 
+export enum ToolType {
+  Hand,
+  Brush,
+  Bucket,
+  Wand,
+  Rectangle,
+  Lasso,
+  ColorPicker,
+  ZoomIn
+}
+
 interface ToolState {
   selectedTool: number,
   changeTool: (t: number) => void;
 }
 
 export const useToolSelect = create<ToolState>((set) => ({
-  selectedTool: -1,
+  selectedTool: ToolType.Brush,
   changeTool: (t: number) => set(() => ({ selectedTool: t }))
 }));

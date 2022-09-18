@@ -1,6 +1,9 @@
+import { ToolType } from "../hooks/useToolSelect";
+
 export type ImageEditorOptions = {
   readonly canvas: HTMLCanvasElement;
   readonly image: ImageBitmap;
+  readonly initialTool: ToolType;
 }
 
 type ImageDimensions = {
@@ -29,10 +32,12 @@ export class ImageEditor {
   // Mutable state.
   x: number;
   y: number;
+  toolType: ToolType;
 
   constructor(readonly options: ImageEditorOptions) {
     this.x = -1;
     this.y = -1;
+    this.toolType = options.initialTool;
     this.layers = {};
 
     Object.keys(LayerNames).map((layerName) => {
@@ -44,17 +49,26 @@ export class ImageEditor {
       };
     });
 
-    // Initialize base layer.
+    // Initialize base and mask layers.
     {
       this.layers[LayerNames.Base].element.width = options.image.width;
       this.layers[LayerNames.Base].element.height = options.image.height;
       this.layers[LayerNames.Base].context.drawImage(options.image, 0, 0);
+
+      this.layers[LayerNames.Mask].element.width = options.image.width;
+      this.layers[LayerNames.Mask].element.height = options.image.height;
     }
+
+    // Setup blend settings for mask layer.
+    {
+      const context = this.layers[LayerNames.Mask].context;
+      context.globalCompositeOperation = "source-over";
+    }
+
+    Object.freeze(this.layers);
 
     // Resize the back buffer so it is the same size as the front one.
     this.resizeBackbuffer();
-
-    Object.freeze(this.layers);
 
     // Initial render of canvas.
     this.render();
@@ -68,7 +82,15 @@ export class ImageEditor {
     this.clearCanvas();
 
     // Draw the image.
-    this.drawImage();
+    this.drawImage(LayerNames.Base);
+
+    // Draw the mask.
+    {
+      this.layers[LayerNames.Offscreen].context.globalAlpha = 0.4;
+      this.drawImage(LayerNames.Mask);
+      this.layers[LayerNames.Offscreen].context.globalAlpha = 1.0;
+      // console.log(this.layers[LayerNames.Mask].element.toDataURL());
+    }
 
     // Flip the back and front buffers.
     this.flipBuffers();
@@ -81,8 +103,21 @@ export class ImageEditor {
    * @param y new y position inside canvas
    */
   updatePosition(x: number, y: number): void {
-    this.x = x;
-    this.y = y;
+    this.x = x * this.layers[LayerNames.World].element.width;
+    this.y = y * this.layers[LayerNames.World].element.height;
+
+    // TODO(kosinw): Batch draw calls for this.
+    if (this.toolType === ToolType.Brush) {
+      const context = this.layers[LayerNames.Mask].context;
+
+      context.fillStyle = '#9ACC59';
+
+      context.beginPath();
+      context.arc(this.x, this.y, 40, 0, 2 * Math.PI);
+      context.fill();
+
+      this.render();
+    }
   }
 
   /**
@@ -93,9 +128,18 @@ export class ImageEditor {
     this.layers[LayerNames.Offscreen].element.height = this.layers[LayerNames.World].element.height;
   }
 
-  private drawImage() {
+  /**
+   * Updates the current tool being used.
+   * 
+   * @param tool the next tool to use with image editor
+   */
+  updateTool(tool: ToolType) {
+    this.toolType = tool;
+  }
+
+  private drawImage(layer: LayerNames) {
     const { context: renderTarget } = this.layers[LayerNames.Offscreen];
-    const { element: image } = this.layers[LayerNames.Base];
+    const { element: image } = this.layers[layer];
 
     const actualDimensions = this.calculateRatios();
 
@@ -107,7 +151,7 @@ export class ImageEditor {
   }
 
   private clearCanvas(): void {
-    const { context, element } = this.layers[LayerNames.World];
+    const { context, element } = this.layers[LayerNames.Offscreen];
 
     context.fillStyle = "#ffffff";
     context.clearRect(0, 0, element.width, element.height);

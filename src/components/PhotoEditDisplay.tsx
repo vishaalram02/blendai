@@ -1,8 +1,9 @@
 import { useRef, useEffect } from "react";
-import { ImageEditor, LayerNames } from "../lib/image-editor";
+import { ImageEditor } from "../lib/imageEditor";
 import { Center } from "@mantine/core";
 import { useElementSize, useResizeObserver } from "@mantine/hooks";
 import { useMouseState } from "../hooks/useMouseState";
+import { useToolSelect } from "../hooks/useToolSelect";
 
 export type PhotoEditDisplayProps = {
   file: File;
@@ -17,15 +18,18 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   const canvasHeight = Math.floor(height * 0.9);
   const { mousePosition, ref: canvasRef } = useMouseState(editor);
   const [resizeRef, _] = useResizeObserver();
-
-  console.log(mousePosition);
+  const tool = useToolSelect(store => store.selectedTool);
 
   useEffect(() => {
-    if (canvasRef.current !== null) {
+    if (canvasRef.current !== null && editor.current === null) {
       const img = new Image;
 
       img.onload = async function () {
-        editor.current = new ImageEditor({ canvas: canvasRef.current!, image: await createImageBitmap(this as HTMLImageElement) });
+        editor.current = new ImageEditor({
+          canvas: canvasRef.current!,
+          initialTool: tool,
+          image: await createImageBitmap(this as HTMLImageElement)
+        });
       };
 
       img.src = url;
@@ -36,9 +40,17 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
     if (resizeRef.current !== null) {
       if (editor.current !== null) {
         editor.current.resizeBackbuffer();
+        editor.current.render();
       }
     }
   }, [resizeRef]);
+
+  useEffect(() => {
+    console.log("tool changed");
+    if (editor.current !== null) {
+      editor.current.updateTool(tool);
+    }
+  }, [tool]);
 
   // if (!!editor.current) {
   //   console.log(editor.current.layers[LayerNames.Base].element.toDataURL());

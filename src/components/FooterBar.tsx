@@ -11,13 +11,13 @@ import {
   IconBucket,
   IconHandStop,
 } from '@tabler/icons';
-import {ReactComponent as Logo} from '../assets/logo.svg';
+import { ReactComponent as Logo } from '../assets/logo.svg';
 
 const useStyles = createStyles((theme) => ({
-    footer: {
-        padding: "10px !important"
-    }
-  }),
+  footer: {
+    padding: "10px !important"
+  }
+}),
 );
 
 
@@ -28,19 +28,19 @@ export function FooterBar() {
   return (
     <Footer height={60} className={classes.footer} p="md" >
 
-        <Group position="right">
-            
-            <TextInput
-                placeholder="Your prompt"
-                radius="md"
-                size="sm"
-                withAsterisk
-            />
-            <Button>Generate</Button>
+      <Group position="right">
 
-        </Group>
-    
-        
+        <TextInput
+          placeholder="Your prompt"
+          radius="md"
+          size="sm"
+          withAsterisk
+        />
+        <Button>Generate</Button>
+
+      </Group>
+
+
     </Footer>
   );
 }
