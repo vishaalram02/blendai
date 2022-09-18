@@ -7,6 +7,7 @@ export const theme: MantineThemeOverride = {
     black: ['#000000'],
     gray: ['#4F4F4F'],
     white: ['#FFFFFF'],
+    red: ['#FF0000'],
   },
   defaultGradient : {
     from: '#27B88D', 

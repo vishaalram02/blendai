@@ -12,7 +12,8 @@ import {
   IconHandStop,
   IconChevronLeft,
   IconChevronRight,
-  IconReload
+  IconReload, 
+  IconTrash,
 } from '@tabler/icons';
 import {ReactComponent as Logo} from '../assets/logo.svg';
 import { IconAdjustmentsHorizontal } from '@tabler/icons';
@@ -46,19 +47,18 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
   const [prompt, setPrompt] = useState("");
 
   const { classes, cx } = useStyles();
-  const [seed, updateSeed, image] = useImageStore(store => [store.seed, store.updateSeed, store.image])
+  const [seed, updateSeed, image, updateImage] = useImageStore(store => [store.seed, store.updateSeed, store.image, store.updateImage])
 
   return (
     <Footer height={60} className={classes.footer} p="md" >
         <Group position="right">
-            {/* <Button >
-                Toggle content
-            </Button> */}
             <Popover width={250} position="top" withArrow shadow="md">
               <Popover.Target>
+                <Tooltip label={"Parameters"} position="top" transitionDuration={0}>
                 <ActionIcon color="green.1" variant="filled">
                   <IconAdjustmentsHorizontal />
                 </ActionIcon>
+                </Tooltip>
               </Popover.Target>
               <Popover.Dropdown>
               <Group style={{marginBottom: 5}}>
@@ -91,9 +91,15 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
             />
             <Button disabled = {!image || loading} color="green.1" onClick = {genImage(prompt)}>Generate</Button>
             <Tooltip label={"Reload"} position="top" transitionDuration={0}>
-                <UnstyledButton>
+                <ActionIcon>
                     <IconReload stroke={1.5} />
-                </UnstyledButton>
+                </ActionIcon>
+                
+            </Tooltip>
+            <Tooltip label={"Delete"} position="top" transitionDuration={0}>
+              <ActionIcon onClick={() => updateImage(null)} color="red.0" variant="filled">
+                <IconTrash />
+              </ActionIcon>
             </Tooltip>
                     
             {/* <Tooltip label={label} position="right" transitionDuration={0}>
