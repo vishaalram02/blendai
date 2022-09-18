@@ -6,6 +6,11 @@ export type ImageEditorOptions = {
   readonly initialTool: ToolType;
 }
 
+type Position = {
+  readonly x: number;
+  readonly y: number;
+}
+
 type ImageDimensions = {
   readonly x: number;
   readonly y: number;
@@ -33,12 +38,14 @@ export class ImageEditor {
   x: number;
   y: number;
   toolType: ToolType;
+  positionBuffer: Position[];
 
   constructor(readonly options: ImageEditorOptions) {
     this.x = -1;
     this.y = -1;
     this.toolType = options.initialTool;
     this.layers = {};
+    this.positionBuffer = [];
 
     Object.keys(LayerNames).map((layerName) => {
       const element = layerName === LayerNames.World ? options.canvas : document.createElement('canvas') as HTMLCanvasElement;
@@ -103,84 +110,94 @@ export class ImageEditor {
    * @param y new y position inside canvas
    */
   updatePosition(x: number, y: number): void {
-    this.x = x * this.layers[LayerNames.World].element.width;
-    this.y = y * this.layers[LayerNames.World].element.height;
+    // TODO(kosinw): Change to viewport
+    const { width: canvasWidth, height: canvasHeight } = this.getSize(LayerNames.Offscreen);
+    const { width: imageWidth, height: imageHeight } = this.getSize(LayerNames.Mask);
+    const { x: offsetX, y: offsetY } = this.calculateRatios();
+    const mouseX = x * canvasWidth;
+    const mouseY = y * canvasHeight;
 
     // TODO(kosinw): Batch draw calls for this.
     if (this.toolType === ToolType.Brush) {
       const context = this.layers[LayerNames.Mask].context;
+      const conversionFactor = Math.max(1, Math.max(imageWidth / canvasWidth, imageHeight / canvasHeight));
 
       context.fillStyle = '#9ACC59';
 
       context.beginPath();
-      context.arc(this.x, this.y, 40, 0, 2 * Math.PI);
+      context.arc((mouseX - offsetX) * conversionFactor, (mouseY - offsetY) * conversionFactor, 40 * conversionFactor, 0, 2 * Math.PI);
       context.fill();
-
       this.render();
-    }
-  }
 
-  /**
-   * Resizes the backbuffer so it matches the size of your mom.
-   */
-  resizeBackbuffer(): void {
-    this.layers[LayerNames.Offscreen].element.width = this.layers[LayerNames.World].element.width;
-    this.layers[LayerNames.Offscreen].element.height = this.layers[LayerNames.World].element.height;
+      // this.positionBuffer.push({ x: (mouseX - offsetX) * conversionFactor, y: (mouseY - offsetY) * conversionFactor });
   }
+}
 
-  /**
-   * Updates the current tool being used.
-   * 
-   * @param tool the next tool to use with image editor
-   */
-  updateTool(tool: ToolType) {
-    this.toolType = tool;
-  }
+/**
+ * Resizes the backbuffer so it matches the size of your mom.
+ */
+resizeBackbuffer(): void {
+  this.layers[LayerNames.Offscreen].element.width = this.layers[LayerNames.World].element.width;
+  this.layers[LayerNames.Offscreen].element.height = this.layers[LayerNames.World].element.height;
+}
+
+/**
+ * Updates the current tool being used.
+ * 
+ * @param tool the next tool to use with image editor
+ */
+updateTool(tool: ToolType) {
+  this.toolType = tool;
+}
 
   private drawImage(layer: LayerNames) {
-    const { context: renderTarget } = this.layers[LayerNames.Offscreen];
-    const { element: image } = this.layers[layer];
+  const { context: renderTarget } = this.layers[LayerNames.Offscreen];
+  const { element: image } = this.layers[layer];
 
-    const actualDimensions = this.calculateRatios();
+  const actualDimensions = this.calculateRatios();
 
-    renderTarget.drawImage(image, actualDimensions.x, actualDimensions.y, actualDimensions.width, actualDimensions.height);
-  }
+  console.log(actualDimensions);
+  renderTarget.drawImage(image, actualDimensions.x, actualDimensions.y, actualDimensions.width, actualDimensions.height);
+}
 
   private flipBuffers(): void {
-    this.layers[LayerNames.World].context.drawImage(this.layers[LayerNames.Offscreen].element, 0, 0);
-  }
+  this.layers[LayerNames.World].context.drawImage(this.layers[LayerNames.Offscreen].element, 0, 0);
+}
 
   private clearCanvas(): void {
-    const { context, element } = this.layers[LayerNames.Offscreen];
+  const { context, element } = this.layers[LayerNames.Offscreen];
 
-    context.fillStyle = "#ffffff";
-    context.clearRect(0, 0, element.width, element.height);
-  }
+  context.fillStyle = "#ffffff";
+  context.clearRect(0, 0, element.width, element.height);
+}
+
+  private getSize(layer: LayerNames): { width: number, height: number } {
+  return this.layers[layer].element;
+}
 
   /**
    * Calculates the ratios of the image such that it can fit on the canvas.
    */
   private calculateRatios(): ImageDimensions {
-    const canvas = this.layers[LayerNames.Offscreen].element;
-    const image = this.layers[LayerNames.Base].element;
+  const canvas = this.layers[LayerNames.Offscreen].element;
+  const image = this.layers[LayerNames.Base].element;
 
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-    const imageWidth = image.width;
-    const imageHeight = image.height;
+  const canvasWidth = canvas.width;
+  const canvasHeight = canvas.height;
+  const imageWidth = image.width;
+  const imageHeight = image.height;
 
-    const aspectRatio = imageHeight / imageWidth;
+  console.log(canvasWidth, canvasHeight, imageWidth, imageHeight);
 
-    let actualWidth = Math.min(imageWidth, canvasWidth);
-    let actualHeight = actualWidth * aspectRatio;
+  // const aspectRatio = imageHeight / imageWidth;
 
-    if (imageHeight > imageWidth) {
-      actualHeight = Math.min(imageHeight, canvasHeight);
-      actualWidth = actualHeight / aspectRatio;
-    }
+  const conversionFactor = Math.max(1, Math.max(imageWidth / canvasWidth, imageHeight / canvasHeight));
 
-    // console.log(canvasWidth, canvasHeight, imageWidth, imageHeight);
-
-    return { x: (canvasWidth - actualWidth) / 2, y: (canvasHeight - actualHeight) / 2, width: actualWidth, height: actualHeight };
-  }
+  return {
+    x: (canvasWidth - imageWidth / conversionFactor) / 2,
+    y: (canvasHeight - imageHeight / conversionFactor) / 2,
+    width: imageWidth / conversionFactor,
+    height: imageHeight / conversionFactor
+  };
+}
 }
