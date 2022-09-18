@@ -8,8 +8,6 @@ export const tools = [
   { icon: icons.IconWand, label: 'Magic Wand', customize: false },
   { icon: icons.IconZoomIn, label: 'Zoom In', customize: false, },
   { icon: icons.IconZoomOut, label: 'Zoom Out', customize: false, },
-  { icon: icons.IconRotate2, label: 'Undo', customize: false, },
-  { icon: icons.IconRotateClockwise2, label: 'Redo', customize: false, },
 ];
 
 export enum ToolType {
