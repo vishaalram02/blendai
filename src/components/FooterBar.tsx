@@ -5,7 +5,7 @@ import {
   IconTrash,
 } from '@tabler/icons';
 import {ReactComponent as Logo} from '../assets/logo.svg';
-import { IconAdjustmentsHorizontal } from '@tabler/icons';
+import { IconAdjustmentsHorizontal, IconArrowBack, IconArrowForwardUp} from '@tabler/icons';
 import { useImageStore } from '../hooks/useImageStore';
 const useStyles = createStyles((theme) => ({
     footer: {
@@ -36,10 +36,23 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
   const [prompt, setPrompt] = useState("");
 
   const { classes, cx } = useStyles();
-  const [seed, updateSeed, image, updateImage] = useImageStore(store => [store.seed, store.updateSeed, store.image, store.updateImage])
+  const [seed, updateSeed, image, updateImage, deleteImage, undo, redo] = useImageStore(store => [store.seed, store.updateSeed, store.image, store.updateImage, store.deleteImage, store.undo, store.redo])
 
   return (
     <Footer height={60} className={classes.footer} p="md" >
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <Group position="left" style={{marginLeft: 20}}>
+        <Tooltip label={"Previous Image"} position="top" transitionDuration={0}>
+          <ActionIcon onClick={() => undo()}>
+            <IconArrowBack />
+          </ActionIcon>
+          </Tooltip>
+          <Tooltip label={"Next Image"} position="top" transitionDuration={0}>
+          <ActionIcon onClick={() => redo()}>
+            <IconArrowForwardUp />
+          </ActionIcon>
+          </Tooltip>
+        </Group>
         <Group position="right">
             <Popover width={250} position="top" withArrow shadow="md">
               <Popover.Target>
@@ -78,7 +91,7 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
                 onChange={(event) => setPrompt(event.currentTarget.value)}
                 disabled = {!image || loading}
             />
-            <Button disabled = {!image || loading} color="green.1" onClick = {genImage(prompt)}>Generate</Button>
+            <Button disabled = {!image || loading} color="green.1" onClick = {genImage(prompt, seed)}>Generate</Button>
             <Tooltip label={"Reload"} position="top" transitionDuration={0}>
                 <ActionIcon>
                     <IconReload stroke={1.5} />
@@ -86,7 +99,7 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
                 
             </Tooltip>
             <Tooltip label={"Delete"} position="top" transitionDuration={0}>
-              <ActionIcon onClick={() => updateImage(null)} color="red.0" variant="filled">
+              <ActionIcon onClick={() => deleteImage()} color="red.0" variant="filled">
                 <IconTrash />
               </ActionIcon>
             </Tooltip>
@@ -98,6 +111,7 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
             </Tooltip> */}
 
         </Group>
+        </div>
     </Footer>
   );
 }

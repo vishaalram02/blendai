@@ -18,7 +18,7 @@ import { PhotoEditDisplay } from './components/PhotoEditDisplay';
 import { postImages, checkProgress } from './lib/api';
 
 export default function App() {
-  const image = useImageStore(store => store.image);
+  const [image, cur] = useImageStore(store => [store.image, store.cur]);
   const setImage = useImageStore(store => store.updateImage)
   const [loading, setLoading] = useState(false)
   const editor = useEditor(state => state.editor);
@@ -28,16 +28,18 @@ export default function App() {
     return res.blob();
   }
 
-  const genImage = (prompt: string) => async () => {
+  const genImage = (prompt: string, seed: number) => async () => {
     console.log("PROMT", prompt)
-    if (!image) {
+    console.log("SEED", seed)
+
+    if (!image.length) {
       return;
     }
     const [imageURL, maskURL] = await editor!.exportImages();
 
     setLoading(true)
     setNavigationProgress(0)
-    const url = await postImages(imageURL, maskURL, prompt);
+    const url = await postImages(imageURL, maskURL, prompt, seed);
     let pollInterval = setInterval(async () => {
       checkProgress(url)
         .then((prog) => {
@@ -76,9 +78,10 @@ export default function App() {
             backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[0]
           },
         })}
-      >
-        {image !== null ? (
-          <PhotoEditDisplay file={image} />
+      > 
+        
+        {cur > -1 ? (
+          <PhotoEditDisplay file={image[cur]} />
         ) : (
           <FileUpload />
         )}

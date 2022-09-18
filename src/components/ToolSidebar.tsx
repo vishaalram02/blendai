@@ -3,6 +3,7 @@ import { ReactComponent as Logo } from '../assets/logo.svg';
 import { tools, useToolSelect } from "../hooks/useToolSelect";
 import { IconPalette, IconArrowsDiagonal, TablerIcon } from '@tabler/icons';
 import { useEffect, useState } from 'react';
+import { useImageStore } from '../hooks/useImageStore';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -105,13 +106,19 @@ function NavbarLink({ icon: Icon, label, customize, active, onClick }: NavbarLin
 export function ToolSidebar() {
   const [active, setActive] = useToolSelect((state) => [state.selectedTool, state.changeTool]);
   const { classes, cx } = useStyles();
+  const [undo, redo] = useImageStore(store => [store.undo, store.redo]);
 
+  const handleToolSelect = (index : number) => {
+    setActive(index);
+    if(index == 6) undo();
+    if(index == 7) redo();
+  }
   const links = tools.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => handleToolSelect(index)}
     />
   ));
 
