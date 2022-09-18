@@ -1,12 +1,30 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import { ImageEditor } from "../lib/imageEditor";
 import { Center } from "@mantine/core";
-import { useElementSize, useResizeObserver } from "@mantine/hooks";
+import { useElementSize } from "@mantine/hooks";
 import { useMouseState } from "../hooks/useMouseState";
-import { useToolSelect } from "../hooks/useToolSelect";
+import { ToolType, useToolSelect } from "../hooks/useToolSelect";
+import { useEditor } from "../hooks/useEditor";
 
 export type PhotoEditDisplayProps = {
-  file: File;
+  file: Blob;
+}
+
+function getCursor(tool: ToolType): string {
+  switch (tool) {
+    case ToolType.Brush:
+    case ToolType.Eraser:
+    case ToolType.Rectangle:
+      return "crosshair";
+    case ToolType.Hand:
+      return "grab";
+    case ToolType.ZoomIn:
+      return "zoom-in";
+    case ToolType.ZoomOut:
+      return "zoom-out";
+    default:
+      return "default";
+  }
 }
 
 export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
@@ -14,11 +32,11 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   const editor = useRef<ImageEditor | null>(null);
 
   const url = URL.createObjectURL(file);
-  const canvasWidth = Math.floor(width * 0.9);
-  const canvasHeight = Math.floor(height * 0.9);
-  const { mousePosition, ref: canvasRef } = useMouseState(editor);
-  const [resizeRef, _] = useResizeObserver();
+  const canvasWidth = useMemo(() => Math.floor(width * 0.9), [width]);
+  const canvasHeight = useMemo(() => Math.floor(height * 0.9), [height]);
+  const { ref: canvasRef } = useMouseState(editor);
   const tool = useToolSelect(store => store.selectedTool);
+  const setEditor = useEditor(store => store.setEditor);
 
   useEffect(() => {
     if (canvasRef.current !== null && editor.current === null) {
@@ -37,13 +55,23 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   }, [canvasRef, height, width]);
 
   useEffect(() => {
-    if (resizeRef.current !== null) {
-      if (editor.current !== null) {
-        editor.current.resizeBackbuffer();
-        editor.current.render();
-      }
+    if (editor.current !== null) {
+      const img = new Image;
+
+      img.onload = async function () {
+        editor.current!.updateImage(await createImageBitmap(this as HTMLImageElement))
+      };
+
+      img.src = url;
     }
-  }, [resizeRef]);
+  }, [file]);
+
+  useEffect(() => {
+    if (editor.current !== null) {
+      editor.current.resizeBackbuffer();
+      editor.current.render();
+    }
+  }, [editor, canvasWidth, canvasHeight]);
 
   useEffect(() => {
     console.log("tool changed");
@@ -52,57 +80,13 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
     }
   }, [tool]);
 
-  // if (!!editor.current) {
-  //   console.log(editor.current.layers[LayerNames.Base].element.toDataURL());
-  // }
-
-  // useEffect(() => {
-  //   if (!!imageRef.current) {
-  //     const imageWidth = imageRef.current.width;
-  //     const imageHeight = imageRef.current.height;
-
-  //     const aspectRatio = imageHeight / imageWidth;
-  //     let actualWidth: number;
-  //     let actualHeight: number;
-
-  //     console.log(imageWidth, imageHeight, width, height);
-
-  //     if (aspectRatio > 1) {
-  //       actualHeight = Math.min(height * 0.9, imageHeight);
-  //       actualWidth = actualHeight / aspectRatio;
-  //     } else {
-  //       actualWidth = Math.min(width * 0.9, imageWidth);
-  //       actualHeight = actualWidth * aspectRatio;
-  //     }
-
-  //     setSize({ width: actualWidth, height: actualHeight });
-
-  //     console.log({ width: actualWidth, height: actualHeight });
-  //   }
-  // }, [imageRef]);
-
-
-  // useEffect(() => {
-  //   if (!!canvas.current) {
-  //     editor.current = new ImageEditor({
-  //       canvas: canvas.current
-  //     });
-  //     editor.current.initialize();
-  //   }
-  // }, [canvas]);
+  useEffect(() => {
+    setEditor(editor.current);
+  }), [editor];
 
   return (
-    <Center ref={containerRef} sx={{ height: "100%" }}>
-      <Center ref={resizeRef} sx={{ height: "100%", width: "100%" }}>
-        <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
-        {/* <img
-        width={size ? size.width : undefined}
-        height={size ? size.height : undefined}
-        style={{ objectFit: 'contain', maxWidth: '100%', height: "auto" }}
-        ref={imageRef}
-        src={url}
-      /> */}
-      </Center>
+    <Center ref={containerRef} sx={{ height: "100%", "&:hover": { cursor: getCursor(tool) } }}>
+      <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
     </Center>
   );
 }

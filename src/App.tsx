@@ -11,7 +11,8 @@ import { ToolSidebar } from "./components/ToolSidebar";
 import { FooterBar } from "./components/FooterBar";
 
 import { FileUpload } from "./components/FileUpload";
-import { useImageStore, setImageStore } from "./hooks/useImageStore";
+import { useImageStore } from "./hooks/useImageStore";
+import { useEditor } from "./hooks/useEditor";
 import { PhotoEditDisplay } from './components/PhotoEditDisplay';
 
 import { postImages, checkProgress } from './lib/api';
@@ -20,59 +21,55 @@ export default function App() {
   const image = useImageStore(store => store.image);
   const setImage = useImageStore(store => store.updateImage)
   const [loading, setLoading] = useState(false)
+  const editor = useEditor(state => state.editor);
 
-   async function dataUrlToFile(dataUrl: string): Promise<File> {
+  async function dataUrlToFile(dataUrl: string): Promise<Blob> {
     const res: Response = await fetch(dataUrl);
-    const blob: Blob = await res.blob();
-    return blob    
+    return res.blob();
   }
 
-  const genImage = (prompt : string) => () => {
+  const genImage = (prompt: string) => async () => {
     console.log("PROMT", prompt)
-    const reader = new FileReader();
-    if(!image){
+    if (!image) {
       return;
     }
-    reader.readAsDataURL(image);
-    reader.onload = async function () {
-      if(typeof reader.result != 'string'){
-        return;
-      }
-      setLoading(true)
-      setNavigationProgress(0)
-      const url = await postImages(reader.result, reader.result, prompt);
-      let pollInterval = setInterval(async ()=>{
-        checkProgress(url)
-        .then((prog)=>{
+    const [imageURL, maskURL] = editor!.exportImages();
+
+    setLoading(true)
+    setNavigationProgress(0)
+    const url = await postImages(imageURL, maskURL, prompt);
+    let pollInterval = setInterval(async () => {
+      checkProgress(url)
+        .then((prog) => {
           setNavigationProgress(5);
-          if(prog.startsWith("data")){
+          if (prog.startsWith("data")) {
             console.log("FINISHED PROCESSING", prog)
             clearInterval(pollInterval);
             setNavigationProgress(100);
             setLoading(false);
             dataUrlToFile(prog)
-            .then((blob)=>{
-              console.log("BLBOBLBLLB EHERERE", blob)
-              setImage(blob)
-            })
+              .then((blob) => {
+                console.log("BLBOBLBLLB EHERERE", blob)
+                setImage(blob)
+              })
           }
-          else{
+          else {
             setNavigationProgress(parseInt(prog));
             console.log(prog);
           }
         })
-        
-      }
-      , 200)
-      
+
     }
-  };
+      , 200)
+
+  }
+
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
       <NavigationProgress />
       <AppShell
         padding="xl"
-        footer= {<FooterBar genImage={genImage} loading={loading}/>}
+        footer={<FooterBar genImage={genImage} loading={loading} />}
         navbar={<ToolSidebar />}
         styles={(theme) => ({
           main: {
