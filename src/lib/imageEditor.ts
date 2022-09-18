@@ -100,8 +100,8 @@ export class ImageEditor {
     this.layers[LayerNames.Base].element.height = image.height;
     this.layers[LayerNames.Base].context.drawImage(image, 0, 0);
 
-    this.layers[LayerNames.Mask].element.width = image.width;
-    this.layers[LayerNames.Mask].element.height = image.height;
+    // this.layers[LayerNames.Mask].element.width = image.width;
+    // this.layers[LayerNames.Mask].element.height = image.height;
 
     this.render();
   }
