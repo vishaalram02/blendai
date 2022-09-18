@@ -8,8 +8,8 @@ export const tools = [
   { icon: icons.IconWand, label: 'Magic Wand', customize: false },
   { icon: icons.IconZoomIn, label: 'Zoom In', customize: false, },
   { icon: icons.IconZoomOut, label: 'Zoom Out', customize: false, },
-  { icon: icons.IconRotate2, label: 'Undo', customize: false, },
-  { icon: icons.IconRotateClockwise2, label: 'Redo', customize: false, },
+  { icon: icons.IconBoxMultiple, label: 'Toggle Mask', customize: false },
+  { icon: icons.IconX, label: 'Clear Mask', customize: false},
 ];
 
 export enum ToolType {
@@ -18,7 +18,9 @@ export enum ToolType {
   Eraser,
   Wand,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  ToggleMask,
+  ClearMask
 }
 
 interface ToolState {

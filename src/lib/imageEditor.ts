@@ -45,11 +45,13 @@ export class ImageEditor {
   positionBuffer: Position[];
   previousPosition: Position;
   offset: Position;
+  maskEnabled: boolean;
 
   constructor(readonly options: ImageEditorOptions) {
     this.brushSize = options.initialBrushSize;
     this.toolType = options.initialTool;
     this.layers = {};
+    this.maskEnabled = true;
     this.positionBuffer = [];
     this.previousPosition = { x: -1, y: -1 };
     this.offset = { x: 0, y: 0 };
@@ -92,7 +94,7 @@ export class ImageEditor {
     const { width, height } = this.getSize(LayerNames.Base);
 
     this.layers[LayerNames.Base].context.clearRect(0, 0, width, height);
-    this.layers[LayerNames.Mask].context.clearRect(0, 0, width, height);
+    // this.layers[LayerNames.Mask].context.clearRect(0, 0, width, height);
 
     this.layers[LayerNames.Base].element.width = image.width;
     this.layers[LayerNames.Base].element.height = image.height;
@@ -115,7 +117,7 @@ export class ImageEditor {
     this.drawImage(LayerNames.Base);
 
     // Draw the mask.
-    {
+    if (this.maskEnabled) {
       this.layers[LayerNames.Offscreen].context.globalAlpha = 0.4;
       this.drawImage(LayerNames.Mask);
       this.layers[LayerNames.Offscreen].context.globalAlpha = 1.0;
@@ -124,6 +126,19 @@ export class ImageEditor {
 
     // Flip the back and front buffers.
     this.flipBuffers();
+  }
+
+  toggleMask(): void {
+    this.maskEnabled = !this.maskEnabled;
+    this.render();
+  }
+
+  clearMask(): void {
+    const { width, height } = this.getSize(LayerNames.Mask);
+
+    this.layers[LayerNames.Mask].context.clearRect(0, 0, width, height);
+
+    this.render();
   }
 
   /**

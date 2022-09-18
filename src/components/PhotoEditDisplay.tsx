@@ -35,7 +35,7 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   const canvasWidth = useMemo(() => Math.floor(width * 0.9), [width]);
   const canvasHeight = useMemo(() => Math.floor(height * 0.9), [height]);
   const { ref: canvasRef } = useMouseState(editor);
-  const [tool, brushSize] = useToolSelect(store => [store.selectedTool, store.brushSize]);
+  const [tool, updateTool, brushSize] = useToolSelect(store => [store.selectedTool, store.changeTool, store.brushSize]);
   const setEditor = useEditor(store => store.setEditor);
 
   useEffect(() => {
@@ -75,9 +75,17 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   }, [editor, canvasWidth, canvasHeight]);
 
   useEffect(() => {
-    console.log("tool changed");
+    // console.log("tool changed");
     if (editor.current !== null) {
-      editor.current.updateTool({ tool, brushSize });
+      if (tool === ToolType.ClearMask) {
+        updateTool(ToolType.Hand);
+        editor.current.clearMask();
+      } else if (tool === ToolType.ToggleMask) {
+        updateTool(ToolType.Hand);
+        editor.current.toggleMask();
+      } else {
+        editor.current.updateTool({ tool, brushSize });
+      }
     }
   }, [tool, brushSize]);
 
