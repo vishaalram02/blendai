@@ -3,10 +3,27 @@ import { ImageEditor } from "../lib/imageEditor";
 import { Center } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import { useMouseState } from "../hooks/useMouseState";
-import { useToolSelect } from "../hooks/useToolSelect";
+import { ToolType, useToolSelect } from "../hooks/useToolSelect";
 
 export type PhotoEditDisplayProps = {
   file: File;
+}
+
+function getCursor(tool: ToolType): string {
+  switch (tool) {
+    case ToolType.Brush:
+    case ToolType.Eraser:
+    case ToolType.Rectangle:
+      return "crosshair";
+    case ToolType.Hand:
+      return "grab";
+    case ToolType.ZoomIn:
+      return "zoom-in";
+    case ToolType.ZoomOut:
+      return "zoom-out";
+    default:
+      return "default";
+  }
 }
 
 export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
@@ -50,7 +67,7 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   }, [tool]);
 
   return (
-    <Center ref={containerRef} sx={{ height: "100%" }}>
+    <Center ref={containerRef} sx={{ height: "100%", "&:hover": { cursor: getCursor(tool) } }}>
       <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
     </Center>
   );
