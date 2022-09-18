@@ -27,7 +27,7 @@ const useStyles = createStyles((theme) => ({
 );
 
 type FooterBarProps = {
-  genImage: (prompt:string) => () => void,
+  genImage: (prompt:string, seed:number) => () => void,
   loading: boolean,
 };
 

@@ -92,10 +92,10 @@ export function FileUpload() {
                     </Dropzone.Idle>
                     <div>
                         <Text size="xl" inline>
-                            Drag images here or click to select files
+                            Drag an image here or select a file !
                         </Text>
                         <Text size="sm" color="dimmed" inline mt={7}>
-                            Attach as many files as you like, each file should not exceed 5mb
+                            Enter text prompt below and draw a region to begin
                         </Text>
                     </div>
                 </Group>

@@ -108,17 +108,12 @@ export function ToolSidebar() {
   const { classes, cx } = useStyles();
   const [undo, redo] = useImageStore(store => [store.undo, store.redo]);
 
-  const handleToolSelect = (index : number) => {
-    setActive(index);
-    if(index == 6) undo();
-    if(index == 7) redo();
-  }
   const links = tools.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => handleToolSelect(index)}
+      onClick={() => setActive(index)}
     />
   ));
 
