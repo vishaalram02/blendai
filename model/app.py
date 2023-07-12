@@ -2,11 +2,11 @@ import beam
 
 app = beam.App(
     name="blendai",
-    cpu=16,
-    memory="64Gi",
-    gpu="T4",
+    cpu=8,
+    memory="32Gi",
+    gpu="A10G",
     python_version="python3.9",
-    python_packages=["ftfy", "regex", "matplotlib", "lpips", "kornia", "opencv-python-headless", "torch==1.9.0", "torchvision==0.10.0"],
+    python_packages=["ftfy", "regex", "matplotlib", "lpips", "kornia", "opencv-python-headless", "torch", "torchvision"],
 )
 app.Mount.PersistentVolume(name="model_weights", path="./checkpoints")
 app.Output.Dir(path="output", name="generated_images")
