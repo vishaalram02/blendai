@@ -39,7 +39,7 @@ python3 app.py
 ## Beam SDK
 
 To deploy serverless webhook on Beam, first install the <a href="https://docs.beam.cloud/getting-started/installation">Beam CLI.</a>
-Then continue with the following:
+Then create a <a href="https://www.beam.cloud/dashboard/volumes">persistant volume</a> mounted at `/checkpoints` to upload the weights, which are available for download <a href="https://drive.google.com/file/d/145NpznbcwMeoX-v8U-bUpu8eXILh3n7Z/view">here (~2GB)</a>.
 ```sh
 cd blended-diffusion-model
 beam deploy app.py
@@ -48,5 +48,5 @@ By default, the model is deployed on an Nvidia A10 GPU, though this is configura
 For the application to call the webhook, we need to specify two environment variables in `/.env`. See `/server/app.py` for request format.
 ```py
 BEAM_APP_ID="" # Application ID
-BEAM_AUTH="" # Auth header for HTTP request, see example curl command
+BEAM_AUTH="" # (Basic) Auth header for webhook, see example curl command
 ```
