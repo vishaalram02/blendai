@@ -3,7 +3,7 @@
 <div align="center">
 	<a href="#overview">Overview</a>
   <span> • </span>
-    	<a href="#setup">Application Setup</a>
+    	<a href="#setup">Setup</a>
   <span> • </span>
     	<a href="#first-steps">Beam SDK</a>
   <p></p>
@@ -19,3 +19,34 @@
 
 ## Overview
 
+Blended diffusion combines a pretratined language-image model with a denoising diffusion probabilistic model to create a text-driven image replacement algorithm. The original source code for the model can be found <a href="https://github.com/omriav/blended-diffusion">here.</a> With BlendAI, we provide an interface for generating prompt-based image edits and deploy the model as a serverless webhook on the cloud using the <a href="https://www.beam.cloud/">Beam SDK.</a>
+<p align="center">
+    <img src="./media/diagram.png" width="80%">
+</p>
+
+## Setup
+
+To build the frontend and run the application server, execute the following
+```sh
+yarn install
+yarn build
+cd server
+source venv/bin/activate # create venv with python3 -m venv venv
+pip3 install -r requirements.txt
+python3 app.py
+```
+
+## Beam SDK
+
+To deploy serverless webhook on Beam, first install the <a href="https://docs.beam.cloud/getting-started/installation">Beam CLI.</a>
+Then continue with the following:
+```sh
+cd blended-diffusion-model
+beam deploy app.py
+```
+By default, the model is deployed on an Nvidia A10 GPU, though this is configurable in `/blended-diffusion-model/app.py`.
+For the application to call the webhook, we need to specify two environment variables in `/.env`. See `/server/app.py` for request format.
+```py
+BEAM_APP_ID="" # Application ID
+BEAM_AUTH="" # Auth header for HTTP request, see example curl command
+```
