@@ -13,12 +13,11 @@ interface ImageState {
 
 export const useImageStore = create<ImageState>((set, get) => ({
     image: [],
-    seed: 0,
+    seed: 1,
     cur: -1,
     updateImage: (i: Blob) => {
         const current = get();
         const arr = [...current.image.slice(current.cur), i];
-        console.log(arr.length, current.cur+1);
         set(() => ({ image: [...current.image.slice(0,current.cur+1), i], cur: current.cur+1 }))
     },
     deleteImage: () => set(() => ({image: [], cur: -1})),

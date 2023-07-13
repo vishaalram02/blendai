@@ -121,7 +121,6 @@ export class ImageEditor {
       this.layers[LayerNames.Offscreen].context.globalAlpha = 0.4;
       this.drawImage(LayerNames.Mask);
       this.layers[LayerNames.Offscreen].context.globalAlpha = 1.0;
-      // console.log(this.layers[LayerNames.Mask].element.toDataURL());
     }
 
     // Flip the back and front buffers.
@@ -177,15 +176,13 @@ export class ImageEditor {
       context.globalCompositeOperation = 'destination-out';
     }
 
-    // TODO(kosinw): Batch draw calls for this.
     if (this.toolType === ToolType.Brush || this.toolType === ToolType.Eraser) {
       context.fillStyle = '#9ACC59';
 
       context.beginPath();
-      context.arc((mouseX - offsetX) * conversionFactor, (mouseY - offsetY) * conversionFactor, this.brushSize * conversionFactor, 0, 2 * Math.PI);
+      context.arc((mouseX - offsetX - this.offset.x) * conversionFactor, (mouseY - offsetY - this.offset.y) * conversionFactor, this.brushSize * conversionFactor, 0, 2 * Math.PI);
       context.fill();
       this.render();
-      // this.positionBuffer.push({ x: (mouseX - offsetX) * conversionFactor, y: (mouseY - offsetY) * conversionFactor });
     }
 
     if (this.toolType === ToolType.Eraser) {
@@ -193,17 +190,19 @@ export class ImageEditor {
     }
 
     if (this.toolType == ToolType.Hand) {
-      const delta = this.delta(this.previousPosition, { x: mouseX, y: mouseY });
-      console.log(delta);
-      const smoothingFactor = 0.7;
 
-      this.offset = { x: this.offset.x + delta.x * smoothingFactor, y: this.offset.y + delta.y * smoothingFactor };
+      const delta = this.delta(this.previousPosition, { x: mouseX, y: mouseY });
+
+      const smoothingFactor = 0.7;
+      if(delta.x*delta.x + delta.y*delta.y < 500){
+        this.offset = { x: this.offset.x + delta.x * smoothingFactor, y: this.offset.y + delta.y * smoothingFactor };
+      }
       this.render();
     }
 
     if (this.toolType === ToolType.Wand) {
       context.fillStyle = '#9ACC59';
-      this.floodFill(base, context, Math.floor((mouseX - offsetX) * conversionFactor), Math.floor((mouseY - offsetY) * conversionFactor));
+      this.floodFill(base, context, Math.floor((mouseX - offsetX - this.offset.x) * conversionFactor), Math.floor((mouseY - offsetY - this.offset.y) * conversionFactor));
     }
 
     this.previousPosition = { x: mouseX, y: mouseY };
@@ -238,11 +237,8 @@ export class ImageEditor {
       }
       const next = [[xPos + 1, yPos], [xPos - 1, yPos], [xPos, yPos - 1], [xPos, yPos + 1]];
       for (let i = 0; i < 4; ++i) {
-        // const maskColor = mask.getImageData(next[i][0], next[i][1], 1, 1).data;
         const imageColor = image.getImageData(next[i][0], next[i][1], 1, 1).data;
         const maskColor = mask.getImageData(next[i][0], next[i][1], 1, 1).data;
-        //const imageColor = this.getColor(imageData, next[i][0], next[i][1], width);
-        //console.log(maskColor, imageColor);
         const diff = 0.3 * (imageColor[0] - color[0]) ** 2 + 0.59 * (imageColor[1] - color[1]) ** 2 + 0.11 * (imageColor[2] - color[2]) ** 2;
         if (0 <= next[i][0] && next[i][0] < width && 0 <= next[i][1] && next[i][1] < height && !maskColor[0] && !maskColor[1] && !maskColor[2] && diff < 60) {
           xQueue.push(next[i][0]);
@@ -278,8 +274,6 @@ export class ImageEditor {
     const { element: image } = this.layers[layer];
 
     const actualDimensions = this.calculateRatios();
-
-    // console.log(actualDimensions);
     renderTarget.drawImage(image, actualDimensions.x, actualDimensions.y, actualDimensions.width, actualDimensions.height);
   }
 
@@ -311,13 +305,9 @@ export class ImageEditor {
     const canvasHeight = canvas.height;
     const imageWidth = image.width;
     const imageHeight = image.height;
-
-    // console.log(canvasWidth, canvasHeight, imageWidth, imageHeight);
-
     // const aspectRatio = imageHeight / imageWidth;
 
     const conversionFactor = Math.max(1, Math.max(imageWidth / canvasWidth, imageHeight / canvasHeight));
-
     return {
       x: (canvasWidth - imageWidth / conversionFactor) / 2,
       y: (canvasHeight - imageHeight / conversionFactor) / 2,

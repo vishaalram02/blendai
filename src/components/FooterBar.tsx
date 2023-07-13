@@ -64,18 +64,22 @@ export function FooterBar({genImage, loading}: FooterBarProps,) {
               </Popover.Target>
               <Popover.Dropdown>
               <Group style={{marginBottom: 5}}>
-                    <Tooltip label = {"Random state initializer"}>
-                      <span className={classes.sliderTitle}> Seed: </span>
+                    <Tooltip label = {"Picks the best image out of # iterations"}>
+                      <span className={classes.sliderTitle}> Iterations: </span>
                     </Tooltip>
-                    <Slider
+                    <Slider style={{width: 100}}
                         size="md"
+                        disabled={loading}
                         value={seed}
                         onChange={updateSeed}
                         className={classes.slider}
                         showLabelOnHover={false}
+                        min={1}
+                        max={16}
+                        step={1}
                         marks={[
-                            { value: 0, label: '0' },
-                            { value: 100, label: '100' },
+                            { value: 1, label: '1' },
+                            { value: 16, label: '16' },
                         ]}
                     />
                 </Group>

@@ -69,8 +69,7 @@ function NavbarLink({ icon: Icon, label, customize, active, onClick }: NavbarLin
                   value={brushSize}
                   min={1}
                   max={45}
-                  // defaultValue={brushSize}
-                  onChange={setBrushSize}
+                  onChangeEnd={setBrushSize}
                   color="green.1"
                   size="xs"
                 />

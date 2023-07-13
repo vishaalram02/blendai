@@ -13,6 +13,6 @@ app.Output.Dir(path="output", name="generated_images")
 
 
 app.Trigger.TaskQueue(
-    inputs = {"baseImage": beam.Types.Image(raw=False), "mask": beam.Types.Image(), "prompt": beam.Types.String()},
+    inputs = {"baseImage": beam.Types.Image(raw=False), "mask": beam.Types.Image(), "prompt": beam.Types.String(), "iterations": beam.Types.String()},
     handler = "main.py:generate_image"
 )

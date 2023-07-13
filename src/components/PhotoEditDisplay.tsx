@@ -75,7 +75,6 @@ export function PhotoEditDisplay({ file }: PhotoEditDisplayProps) {
   }, [editor, canvasWidth, canvasHeight]);
 
   useEffect(() => {
-    // console.log("tool changed");
     if (editor.current !== null) {
       if (tool === ToolType.ClearMask) {
         updateTool(ToolType.Hand);

@@ -11,6 +11,7 @@ def generate_image(**inputs):
     baseImage = inputs["baseImage"]
     mask = inputs["mask"]
     prompt = inputs["prompt"]
+    iterations = inputs["iterations"]
     baseImage.convert("RGB").save("input.jpg")
     mask.convert("RGB").save("mask.jpg")
     
@@ -30,7 +31,7 @@ def generate_image(**inputs):
         "l2_sim_lambda": 10000,
         "seed": 404,
         "gpu_id": 0,
-        "iterations_num": 8,
+        "iterations_num": int(iterations),
         "batch_size": 1,
         "export_assets": None,
         "background_preservation_loss": None,

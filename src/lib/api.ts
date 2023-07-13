@@ -10,13 +10,21 @@ async function postImages(imageb64: string, maskb64: string, prompt: string, see
             seed: seed
         })
     })
-    .then((response) => response.text())
-
+    .then((response) => response.json())
+    .then((response) => response.task_id)
 }
 
-async function checkProgress(url: string):Promise<string>{
-    return fetch(url, {mode: 'cors'})
-    .then((response) => response.text())
+async function getStatus(task: string, seed: number){
+    const url = "/getStatus"
+    return fetch(url, {
+        method: "POST",
+        mode: 'cors',
+        body: JSON.stringify({
+            task: task,
+            seed: seed,
+        })
+    })
+    .then((response) => response.json())
 }
 
-export {postImages, checkProgress}
+export {postImages, getStatus}

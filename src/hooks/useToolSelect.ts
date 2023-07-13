@@ -32,7 +32,7 @@ interface ToolState {
 
 export const useToolSelect = create<ToolState>((set) => ({
   selectedTool: ToolType.Brush,
-  brushSize: 15,
+  brushSize: 30,
   changeTool: (t: number) => set(() => ({ selectedTool: t })),
   changeBrushSize: (t: number) => set(() => ({ brushSize: t }))
 }));

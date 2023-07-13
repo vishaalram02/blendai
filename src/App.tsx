@@ -15,12 +15,13 @@ import { useImageStore } from "./hooks/useImageStore";
 import { useEditor } from "./hooks/useEditor";
 import { PhotoEditDisplay } from './components/PhotoEditDisplay';
 
-import { postImages, checkProgress } from './lib/api';
+import { postImages, getStatus } from './lib/api';
 
 export default function App() {
   const [image, cur] = useImageStore(store => [store.image, store.cur]);
-  const setImage = useImageStore(store => store.updateImage)
-  const [loading, setLoading] = useState(false)
+  const setImage = useImageStore(store => store.updateImage);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const editor = useEditor(state => state.editor);
 
   async function dataUrlToFile(dataUrl: string): Promise<Blob> {
@@ -29,9 +30,6 @@ export default function App() {
   }
 
   const genImage = (prompt: string, seed: number) => async () => {
-    console.log("PROMT", prompt)
-    console.log("SEED", seed)
-
     if (!image.length) {
       return;
     }
@@ -39,30 +37,23 @@ export default function App() {
 
     setLoading(true)
     setNavigationProgress(0)
-    const url = await postImages(imageURL, maskURL, prompt, seed);
+    const task = await postImages(imageURL, maskURL, prompt, seed);
     let pollInterval = setInterval(async () => {
-      checkProgress(url)
-        .then((prog) => {
-          setNavigationProgress(5);
-          if (prog.startsWith("data")) {
-            console.log("FINISHED PROCESSING", prog)
-            clearInterval(pollInterval);
-            setNavigationProgress(100);
-            setLoading(false);
-            dataUrlToFile(prog)
-              .then((blob) => {
-                console.log("BLBOBLBLLB EHERERE", blob)
-                setImage(blob)
-              })
-          }
-          else {
-            setNavigationProgress(parseInt(prog));
-            console.log(prog);
-          }
-        })
-
+      getStatus(task, seed).then(res => {
+        if(res["status"] == "completed"){
+          dataUrlToFile(res["bytes"]).then((blob) => {
+            setImage(blob);
+          })
+          clearInterval(pollInterval);
+          setNavigationProgress(100);
+          setLoading(false);
+        } else {
+          setNavigationProgress(progress);
+          setProgress(progress+5)
+        }
+      })
     }
-      , 1000)
+      , 5000)
 
   }
 
