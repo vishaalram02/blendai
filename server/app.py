@@ -6,6 +6,7 @@ from base64 import b64encode
 
 app = Flask(__name__, template_folder="../dist", static_folder="../dist/assets")
 load_dotenv()
+prog = {}
 
 @app.route('/')
 def hello():
@@ -37,11 +38,11 @@ def process(body):
     url = "https://apps.beam.cloud/z2gr1"
     payload = {"mask": mask, "prompt": prompt, "baseImage": imageData, "iterations": iterations}
     headers = {
-    "Accept": "*/*",
-    "Accept-Encoding": "gzip, deflate",
-    "Authorization": os.environ["BEAM_AUTH"],
-    "Connection": "keep-alive",
-    "Content-Type": "application/json"
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate",
+        "Authorization": os.environ["BEAM_AUTH"],
+        "Connection": "keep-alive",
+        "Content-Type": "application/json"
     }
 
     response = requests.request("POST", url, 
@@ -55,6 +56,10 @@ def process(body):
 @parse_body("task", "seed")
 def getstatus(body):
     task = body["task"]
+    if task not in prog:
+        prog[task] = 0
+    prog[task] += (21-int(body["seed"]))//2
+
     url = "https://api.beam.cloud/v1/task/{TASK_ID}/status/".format(TASK_ID = task)
     headers = {
         "Authorization": os.environ["BEAM_AUTH"],
@@ -67,9 +72,9 @@ def getstatus(body):
         z = zipfile.ZipFile(io.BytesIO(r.content))
         bytes = z.read(sorted(z.namelist())[-int(body["seed"])])
 
-        return {"status": "completed", "bytes": "data:image/png;base64," + b64encode(bytes).decode()}
+        return {"status": "completed", "bytes": "data:image/png;base64," + b64encode(bytes).decode(), "prog": 100}
     else:
-        return {"status": "in progress"}, 200
+        return {"status": "in progress", "prog": min(prog[task],100)}, 200
 
 
 if __name__ == "__main__":

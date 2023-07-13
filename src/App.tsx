@@ -48,14 +48,15 @@ export default function App() {
           setNavigationProgress(100);
           setLoading(false);
         } else {
-          setNavigationProgress(progress);
-          setProgress(progress+5)
+          setNavigationProgress(res["prog"]);
         }
       })
     }
       , 5000)
 
   }
+
+ 
 
   return (
     <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
