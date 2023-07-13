@@ -35,7 +35,7 @@ def process(body):
     prompt = body["prompt"]
     iterations = body["seed"]
 
-    url = "https://apps.beam.cloud/z2gr1"
+    url = "https://apps.beam.cloud/" + os.environ["BEAM_APP_ID"]
     payload = {"mask": mask, "prompt": prompt, "baseImage": imageData, "iterations": iterations}
     headers = {
         "Accept": "*/*",
